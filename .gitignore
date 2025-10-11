@@ -1,10 +1,33 @@
+# ==========================================================
+# Git Ignore Configuration de Poseidon Capital Solutions
+# ==========================================================
+# Ce fichier spécifie les fichiers et dossiers à exclure du contrôle de version Git
+# Objectif : garder le dépôt propre, sans dépendances locales, binaires ni fichiers sensibles
+# ==========================================================
+
+# ----------------------------------------------------------
+# Build & Output
+# ----------------------------------------------------------
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+out/
 
-### STS ###
+# ----------------------------------------------------------
+# IDE / Environment Specific
+# ----------------------------------------------------------
+### IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+### Eclipse / Spring Tool Suite (STS)
 .apt_generated
 .classpath
 .factorypath
@@ -13,36 +36,56 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
+### NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
 
-### Logs ###
+# ----------------------------------------------------------
+# Logs
+# ----------------------------------------------------------
 /logs/
-/logs/PCS_TradingApp.log
 *.log
+/logs/PCS_TradingApp.log
 
-# Optional additions
-out/
-
-
-# .env (do not commit)
-# Create this file locally with:
-# DB_USERNAME=your_db_user
-# DB_PASSWORD=your_db_password
+# ----------------------------------------------------------
+# Fichiers d'environnement (.env) (do not commit)
+# ----------------------------------------------------------
+# Ces fichiers contiennent des informations sensibles de connexion à la base de données (identifiants, mots de passe) et ne doivent JAMAIS être versionnés.
+#
+# ATTENTION : Ne jamais pousser ce fichier sur GitHub !
+#
+# A créer manuellement à la racine du projet
+#   - .env.dev   → pour le développement
+#   - .env.test  → pour les tests
+#   - .env.prod  → pour la production (si utilisé)
+# avec les variables suivantes :
+#
+#   DB_URL=your_url
+#   # Structure générique : jdbc:mysql://<host>:<port>/<database>
+#   # Exemple : jdbc:mysql://localhost:3306/poseidon_demo
+#
+#   DB_USERNAME=your_db_user
+#
+#   DB_PASSWORD=your_db_password
+#
+# Ces fichiers sont automatiquement lus par la classe EnvConfig lors du démarrage de l'application.
+# ==========================================
 .env
+.env.dev
+.env.test
+.env.prod
+
+# ----------------------------------------------------------
+# Fichiers divers / système
+# Fichiers temporaires ou caches générés automatiquement par le système d'exploitation.
+# ----------------------------------------------------------
+# macOS :
+.DS_Store
+# Windows :
+Thumbs.db
