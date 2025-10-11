@@ -4,25 +4,37 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.guides.springboothelloworld</groupId>
-    <artifactId>spring-boot-skeleton</artifactId>
+    <groupId>com.poseidon</groupId>
+    <artifactId>pcs-trading-app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>spring-boot-skeleton</name>
-    <description>Demo project for Spring Boot</description>
+    <name>Poseidon Capital Solutions - Trading App</name>
+    <description>Application de gestion des offres, courbes, transactions et utilisateurs pour Poseidon Capital Solutions (Projet 7 - OpenClassrooms)</description>
 
+    <!--
+  Mise à jour vers Spring Boot 3.5.6 (release du 18 septembre 2025)
+  Raison : corriger les vulnérabilités transitives signalées par Maven/IntelliJ
+  et bénéficier des dernières optimisations et correctifs de sécurité.
+  Compatible Java 17 et Jakarta EE 10.
+
+  Source de référence :
+  https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent
+-->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.0</version>
+        <version>3.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
+        <!-- Définit l'encodage global pour les fichiers source (Java) lus par Maven -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Définit l'encodage des rapports générés par Maven (Surefire, JaCoCo, etc.) -->
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
+        <lombok.version>1.18.30</lombok.version> <!-- set the version of lombok -->
     </properties>
 
     <dependencies>
@@ -38,6 +50,8 @@
             <version>3.1.0</version>
         </dependency>
         <!-- Dépendances Spring Boot -->
+        <!-- Provides the necessary components to build web applications using Spring MVC.
+        Includes an embedded Tomcat server, Jackson for JSON processing, and a logging framework. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -73,10 +87,24 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-
+        <!-- Librairie java_dotenv pour charger les variables d'environnement depuis un fichier .env.test -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>java-dotenv</artifactId>
+            <version>5.2.2</version>
+        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+        <!-- Lombok : annotations de génération de code à la compilation (getters, setters, etc.)
+     Scope 'provided' : Lombok est utilisé uniquement à la compilation,
+     il n'est pas inclus dans le JAR final, car les méthodes générées sont déjà présentes -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -85,6 +113,36 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- Plugin pour forcer l'encodage UTF-8 lors de la copie des ressources (application.properties, templates, etc.)
+                  Évite les erreurs “MalformedInputException” dues aux caractères accentués -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- Maven Compiler Plugin + Lombok support -->
+            <!-- Configure the Maven Compiler Plugin to enable Lombok annotation processing,
+  so that Lombok can generate code (getters, setters, constructors, etc.) during compilation -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding><!-- Empêche les erreurs liées aux caractères accentués dans les classes Java -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
         </plugins>
     </build>
