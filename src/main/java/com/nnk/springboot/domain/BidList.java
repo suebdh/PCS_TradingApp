@@ -1,7 +1,10 @@
 package com.nnk.springboot.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.sql.Timestamp;
 
 /**
  * Entité représentant une offre (Bid) soumise sur la plateforme Poseidon Capital Solutions.
@@ -11,8 +14,34 @@ import jakarta.persistence.Table;
  * Elle n'était pas utile dans cette entité JPA, qui ne dépend pas de l'injection Spring.
  */
 
+@Getter
+@Setter
 @Entity
 @Table(name = "bidlist")
 public class BidList {
-    // TODO: Map columns in data table BIDLIST with corresponding java fields
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer bidListId;
+
+    String account;
+    String type;
+    Double bidQuantity;
+    Double askQuantity;
+    Double bid;
+    Double ask;
+    String benchmark;
+    Timestamp bidListDate;
+    String commentary;
+    String security;
+    String status;
+    String trader;
+    String book;
+    String creationName;
+    Timestamp creationDate;
+    String revisionName;
+    Timestamp revisionDate;
+    String dealName;
+    String dealType;
+    String sourceListId;
+    String side;
 }
