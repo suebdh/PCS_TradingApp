@@ -33,7 +33,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Définit l'encodage des rapports générés par Maven (Surefire, JaCoCo, etc.) -->
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>17</java.version>
+        <java.version>17</java.version> <!-- set the version of java -->
         <lombok.version>1.18.30</lombok.version> <!-- set the version of lombok -->
     </properties>
 

@@ -1,10 +1,24 @@
-# spring-boot
-## Technical:
+# Poseidon Capital Solutions - Trading App
+> Application Spring Boot permettant **la gestion des offres, courbes, notations, règles et transactions financières** pour Poseidon Capital Solutions.  
+> Projet 7 du parcours **Développeur Java - OpenClassrooms**.
 
-1. Spring Boot 3.1.0
-2. Java 17
-3. Thymeleaf
-4. Bootstrap v.4.3.1
+---
+
+## Stack technique
+
+| Technologie              | Version | Usage                                                     |
+|--------------------------|---------|-----------------------------------------------------------|
+| **Spring Boot**          | 3.5.6   | Framework principal (Web, Data JPA, Security, Validation) |
+| **Java**                 | 17      | Version LTS utilisée pour compatibilité Spring Boot 3     |
+| **Thymeleaf**            | 3.x     | Moteur de templates HTML côté serveur                     |
+| **Bootstrap**            | 4.3.1   | Mise en forme du front-end                                |
+| **Hibernate / JPA**      | Intégré | ORM pour la gestion des entités et du mapping SQL         |
+| **MySQL**                | 8.x     | Base de données principale                                |
+| **H2**                   | 2.x     | Base en mémoire pour les tests                            |
+| **Lombok**               | 1.18.30 | Génération automatique des getters/setters                |
+| **dotenv (java-dotenv)** | 5.2.2   | Gestion sécurisée des variables d’environnement (.env)    |
+| **JUnit 5 (Jupiter)**    | 5.x     | Framework de tests unitaires                              |
+| **Spring Security**      | 6.x     | Authentification *session-based* (non-JWT)                |
 
 
 ## Setup with Intellij IDE
