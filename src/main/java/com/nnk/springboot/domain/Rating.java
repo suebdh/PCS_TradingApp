@@ -1,12 +1,9 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.sql.Timestamp;
 
 /**
  * Entité représentant la notation (Rating) attribuée à un instrument financier.
@@ -14,6 +11,7 @@ import java.sql.Timestamp;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "rating")
 public class Rating {
@@ -25,4 +23,12 @@ public class Rating {
     private String sandPRating;
     private String fitchRating;
     private Integer orderNumber;
+
+    // Constructeur pratique pour les tests et initialisations rapides
+    public Rating(String moodysRating, String sandPRating, String fitchRating, Integer orderNumber) {
+        this.moodysRating = moodysRating;
+        this.sandPRating = sandPRating;
+        this.fitchRating = fitchRating;
+        this.orderNumber = orderNumber;
+    }
 }

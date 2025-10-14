@@ -10,7 +10,9 @@
     <packaging>jar</packaging>
 
     <name>Poseidon Capital Solutions - Trading App</name>
-    <description>Application de gestion des offres, courbes, transactions et utilisateurs pour Poseidon Capital Solutions (Projet 7 - OpenClassrooms)</description>
+    <description>Application de gestion des offres, courbes, transactions et utilisateurs pour Poseidon Capital
+        Solutions (Projet 7 - OpenClassrooms)
+    </description>
 
     <!--
   Mise à jour vers Spring Boot 3.5.6 (release du 18 septembre 2025)
@@ -33,7 +35,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Définit l'encodage des rapports générés par Maven (Surefire, JaCoCo, etc.) -->
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>17</java.version>
+        <java.version>17</java.version> <!-- set the version of java -->
+        <jacoco.version>0.8.12</jacoco.version> <!-- set the version of jacoco -->
         <lombok.version>1.18.30</lombok.version> <!-- set the version of lombok -->
     </properties>
 
@@ -55,7 +58,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -74,15 +76,12 @@
         </dependency>
         <!-- Dépendance MySQL -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!-- Starter Spring Boot pour activer la validation des DTOs et entités
-     avec les annotations @Valid, @NotBlank, @Email, @Size, etc.
-     Ce starter inclut automatiquement les dépendances de Jakarta Validation
-     et le moteur Hibernate Validator. -->
+        <!-- Starter Spring Boot pour activer la validation des DTOs et entités avec les annotations @Valid, @NotBlank, @Email, @Size, etc.
+     Ce starter inclut automatiquement les dépendances de Jakarta Validation et le moteur Hibernate Validator. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -110,6 +109,8 @@
 
     <build>
         <plugins>
+            <!-- Enables building, packaging, and running the application with Maven.
+              Supports commands like 'mvn spring-boot:run' and 'mvn package'.-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -134,7 +135,8 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-                    <encoding>UTF-8</encoding><!-- Empêche les erreurs liées aux caractères accentués dans les classes Java -->
+                    <encoding>UTF-8
+                    </encoding><!-- Empêche les erreurs liées aux caractères accentués dans les classes Java -->
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -144,6 +146,83 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+            <!-- Maven Surefire Plugin configuration for running unit tests (*Test.java) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <!-- Maven Failsafe Plugin configuration for running integration tests (*IT.java) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.5.3</version>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Jacoco for code coverage during tests.
+             Generates an HTML report at: target/site/jacoco/index.html -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <developers>
+        <developer>
+            <id>sarar</id>
+            <name>Sarar Hammar</name>
+            <organization>OpenClassrooms</organization>
+            <organizationUrl>https://openclassrooms.com</organizationUrl>
+            <roles>
+                <role>Développeuse Back-end</role>
+            </roles>
+            <timezone>Europe/Paris</timezone>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:https://github.com/suebdh/PCS_TradingApp.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/suebdh/PCS_TradingApp.git</developerConnection>
+        <!-- Lien de consultation du dépôt sur GitHub -->
+        <url>https://github.com/suebdh/PCS_TradingApp</url>
+    </scm>
+
 </project>

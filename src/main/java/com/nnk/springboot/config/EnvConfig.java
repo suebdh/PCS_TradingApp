@@ -57,7 +57,7 @@ public class EnvConfig {
                 .load();
 
         if (dotenv.get("DB_USERNAME") == null && dotenv.get("DB_PASSWORD") == null) {
-            // fallback éventuel sur .env si tu en utilises un en local
+            // fallback éventuel sur .env si utilisé un en local
             dotenv = Dotenv.configure().ignoreIfMissing().load();
         }
 

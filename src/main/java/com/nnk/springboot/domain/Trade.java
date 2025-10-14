@@ -2,7 +2,9 @@ package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
@@ -16,6 +18,8 @@ import java.sql.Timestamp;
  */
 @Getter
 @Setter
+@NoArgsConstructor // constructeur vide, obligatoire pour JPA
+@AllArgsConstructor // constructeur complet
 @Entity
 @Table(name = "trade")
 public class Trade {
@@ -42,4 +46,10 @@ public class Trade {
     private String dealType;
     private String sourceListId;
     private String side;
+
+    // Constructeur pratique utilisé dans les tests
+    public Trade(String tradeAccount, String type) {
+        this.account = tradeAccount;
+        this.type = type;
+    }
 }
