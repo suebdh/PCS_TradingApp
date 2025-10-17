@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * Entité représentant une offre (Bid) soumise sur la plateforme Poseidon Capital Solutions.
@@ -19,33 +19,47 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "bidlist")
+@Table(name = "bid_list")
 public class BidList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bidListId;
 
-    String account;
-    String type;
-    Double bidQuantity;
-    Double askQuantity;
-    Double bid;
-    Double ask;
-    String benchmark;
-    Timestamp bidListDate;
-    String commentary;
-    String security;
-    String status;
-    String trader;
-    String book;
-    String creationName;
-    Timestamp creationDate;
-    String revisionName;
-    Timestamp revisionDate;
-    String dealName;
-    String dealType;
-    String sourceListId;
-    String side;
+    @Column(nullable = false, length = 30)
+    private String account;
+    @Column(nullable = false, length = 30)
+    private String type;
+    private Double bidQuantity;
+    private Double askQuantity;
+    private Double bid;
+    private Double ask;
+    @Column(length = 125)
+    private String benchmark;
+    private LocalDateTime bidListDate;
+    @Column(length = 125)
+    private String commentary;
+    @Column(length = 125)
+    private String security;
+    @Column(length = 10)
+    private String status;
+    @Column(length = 125)
+    private String trader;
+    @Column(length = 125)
+    private String book;
+    @Column(length = 125)
+    private String creationName;
+    private LocalDateTime creationDate;
+    @Column(length = 125)
+    private String revisionName;
+    private LocalDateTime revisionDate;
+    @Column(length = 125)
+    private String dealName;
+    @Column(length = 125)
+    private String dealType;
+    @Column(length = 125)
+    private String sourceListId;
+    @Column(length = 125)
+    private String side;
 
     public BidList(String account, String type, Double bidQuantity) {
         this.account = account;
