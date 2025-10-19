@@ -1,4 +1,0 @@
--- ===============================================
--- Jeu de données à remplir ultérieurement
--- (utilisé uniquement pour les tests automatisés)
--- ===============================================
