@@ -60,10 +60,4 @@ public class BidList {
     private String sourceListId;
     @Column(length = 125)
     private String side;
-
-    public BidList(String account, String type, Double bidQuantity) {
-        this.account = account;
-        this.type = type;
-        this.bidQuantity = bidQuantity;
-    }
 }

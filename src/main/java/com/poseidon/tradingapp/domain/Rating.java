@@ -25,12 +25,4 @@ public class Rating {
     @Column(length = 125)
     private String fitchRating;
     private Integer orderNumber;
-
-    // Constructeur pratique pour les tests et initialisations rapides
-    public Rating(String moodysRating, String sandPRating, String fitchRating, Integer orderNumber) {
-        this.moodysRating = moodysRating;
-        this.sandPRating = sandPRating;
-        this.fitchRating = fitchRating;
-        this.orderNumber = orderNumber;
-    }
 }

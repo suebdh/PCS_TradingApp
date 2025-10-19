@@ -27,17 +27,4 @@ public class CurvePoint {
     private Double term;
     private Double value;
     private LocalDateTime creationDate;
-
-    /**
-     * Constructeur pratique pour les tests et initialisations rapides.
-     *
-     * @param curveId identifiant de la courbe
-     * @param term    la maturité ou la durée
-     * @param value   la valeur associée à cette maturité
-     */
-    public CurvePoint(Integer curveId, Double term, Double value) {
-        this.curveId = curveId;
-        this.term = term;
-        this.value = value;
-    }
 }

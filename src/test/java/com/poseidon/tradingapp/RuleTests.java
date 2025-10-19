@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class RuleTests {
@@ -22,11 +24,18 @@ public class RuleTests {
 
 	@Test
 	public void ruleTest() {
-		RuleName rule = new RuleName("Rule Name", "Description", "Json", "Template", "SQL", "SQL Part");
+		// Création de l'objet avec setters (constructeur vide + setters)
+		RuleName rule = new RuleName();
+		rule.setName("Rule Name");
+		rule.setDescription("Description");
+		rule.setJson("Json");
+		rule.setTemplate("Template");
+		rule.setSqlStr("SQL");
+		rule.setSqlPart("SQL Part");
 
 		// Save
 		rule = ruleNameRepository.save(rule);
-		assertNotNull(rule.getId());
+		assertNotNull(rule.getRuleNameId());
         assertEquals("Rule Name", rule.getName());
 
 		// Update
@@ -39,7 +48,7 @@ public class RuleTests {
         assertFalse(listResult.isEmpty());
 
 		// Delete
-		Integer id = rule.getId();
+		Integer id = rule.getRuleNameId();
 		ruleNameRepository.delete(rule);
 		Optional<RuleName> ruleList = ruleNameRepository.findById(id);
 		assertFalse(ruleList.isPresent());

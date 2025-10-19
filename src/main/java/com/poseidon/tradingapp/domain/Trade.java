@@ -59,10 +59,4 @@ public class Trade {
     private String sourceListId;
     @Column(length = 125)
     private String side;
-
-    // Constructeur pratique utilisé dans les tests
-    public Trade(String tradeAccount, String type) {
-        this.account = tradeAccount;
-        this.type = type;
-    }
 }
