@@ -1,10 +1,13 @@
 package com.poseidon.tradingapp.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -29,10 +32,17 @@ public class BidList {
     private String account;
     @Column(nullable = false, length = 30)
     private String type;
-    private Double bidQuantity;
-    private Double askQuantity;
-    private Double bid;
-    private Double ask;
+
+    @Positive
+    private Integer bidQuantity;
+    @Positive
+    private Integer askQuantity;
+    @DecimalMin("0.0")
+    @Column(precision = 10, scale = 4)
+    private BigDecimal bid;
+    @DecimalMin("0.0")
+    @Column(precision = 10, scale = 4)
+    private BigDecimal ask;
     @Column(length = 125)
     private String benchmark;
     private LocalDateTime bidListDate;

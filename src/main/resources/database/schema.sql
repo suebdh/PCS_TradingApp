@@ -1,12 +1,12 @@
 -- Création des tables
 CREATE TABLE bid_list (
-  bid_id INT NOT NULL AUTO_INCREMENT,
+  bid_list_id INT NOT NULL AUTO_INCREMENT,
   account VARCHAR(30) NOT NULL,
   type VARCHAR(30) NOT NULL,
-  bid_quantity DOUBLE,
-  ask_quantity DOUBLE,
-  bid DOUBLE ,
-  ask DOUBLE,
+  bid_quantity INT UNSIGNED,
+  ask_quantity INT UNSIGNED,
+  bid DECIMAL(10,4) UNSIGNED,
+  ask DECIMAL(10,4) UNSIGNED,
   benchmark VARCHAR(125),
   bid_list_date TIMESTAMP,
   commentary VARCHAR(125),
@@ -23,7 +23,7 @@ CREATE TABLE bid_list (
   source_list_id VARCHAR(125),
   side VARCHAR(125),
 
-  PRIMARY KEY (bid_id)
+  PRIMARY KEY (bid_list_id )
 );
 
 CREATE TABLE trade (

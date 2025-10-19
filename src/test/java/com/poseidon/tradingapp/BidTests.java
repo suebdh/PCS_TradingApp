@@ -28,7 +28,7 @@ public class BidTests {
 		BidList bid = new BidList();
 		bid.setAccount("Account Test");
 		bid.setType("Type Test");
-		bid.setBidQuantity(10d);
+		bid.setBidQuantity(10);
 
 		// Save
 		bid = bidListRepository.save(bid);
@@ -36,7 +36,7 @@ public class BidTests {
 		assertEquals(10d, bid.getBidQuantity(), 10d);
 
 		// Update
-		bid.setBidQuantity(20d);
+		bid.setBidQuantity(20);
 		bid = bidListRepository.save(bid);
 		assertEquals(20d, bid.getBidQuantity(), 20d);
 
