@@ -56,8 +56,9 @@ CREATE TABLE curve_point (
   curve_point_id INT NOT NULL AUTO_INCREMENT,
   curve_id INT,
   as_of_date TIMESTAMP,
-  term DOUBLE ,
-  value DOUBLE ,
+    -- Maturité (en années fractionnaires) et valeur associée (taux ou rendement)
+    term DECIMAL(10,4),
+    value DECIMAL(10,4),
   creation_date TIMESTAMP ,
 
   PRIMARY KEY (curve_point_id)

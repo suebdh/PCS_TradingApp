@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +28,8 @@ public class CurvePointTests {
 		// Création de l'objet via le constructeur vide et setters
 		CurvePoint curvePoint = new CurvePoint();
 		curvePoint.setCurveId(10);
-		curvePoint.setTerm(10d);
-		curvePoint.setValue(30d);
+		curvePoint.setTerm(new BigDecimal("10.000"));
+		curvePoint.setValue(new BigDecimal("30.000"));
 
 		// Save
 		curvePoint = curvePointRepository.save(curvePoint);
