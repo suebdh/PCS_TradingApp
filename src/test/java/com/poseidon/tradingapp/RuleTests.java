@@ -1,7 +1,7 @@
 package com.poseidon.tradingapp;
 
-import com.poseidon.tradingapp.domain.RuleName;
-import com.poseidon.tradingapp.repositories.RuleNameRepository;
+import com.poseidon.tradingapp.domain.Rule;
+import com.poseidon.tradingapp.repositories.RuleRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RuleTests {
 
 	@Autowired
-	private RuleNameRepository ruleNameRepository;
+	private RuleRepository ruleRepository;
 
 	@Test
 	public void ruleTest() {
 		// Création de l'objet avec setters (constructeur vide + setters)
-		RuleName rule = new RuleName();
+		Rule rule = new Rule();
 		rule.setName("Rule Name");
 		rule.setDescription("Description");
 		rule.setJson("Json");
@@ -34,23 +34,23 @@ public class RuleTests {
 		rule.setSqlPart("SQL Part");
 
 		// Save
-		rule = ruleNameRepository.save(rule);
-		assertNotNull(rule.getRuleNameId());
+		rule = ruleRepository.save(rule);
+		assertNotNull(rule.getRuleId());
         assertEquals("Rule Name", rule.getName());
 
 		// Update
 		rule.setName("Rule Name Update");
-		rule = ruleNameRepository.save(rule);
+		rule = ruleRepository.save(rule);
         assertEquals("Rule Name Update", rule.getName());
 
 		// Find
-		List<RuleName> listResult = ruleNameRepository.findAll();
+		List<Rule> listResult = ruleRepository.findAll();
         assertFalse(listResult.isEmpty());
 
 		// Delete
-		Integer id = rule.getRuleNameId();
-		ruleNameRepository.delete(rule);
-		Optional<RuleName> ruleList = ruleNameRepository.findById(id);
+		Integer id = rule.getRuleId();
+		ruleRepository.delete(rule);
+		Optional<Rule> ruleList = ruleRepository.findById(id);
 		assertFalse(ruleList.isPresent());
 	}
 }

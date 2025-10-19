@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Entité représentant une règle de validation (RuleName)
+ * Entité représentant une règle de validation (Rule)
  * utilisée dans l'application Poseidon Capital Solutions.
  * Chaque règle contient un nom, une description et des expressions 'SQL/JSON' associées.
  */
@@ -14,11 +14,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "rule_name")
-public class RuleName {
+@Table(name = "rule")
+public class Rule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ruleNameId;
+    private Integer ruleId;
 
     @Column(length = 125)
     private String name;

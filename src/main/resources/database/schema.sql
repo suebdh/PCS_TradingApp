@@ -76,8 +76,8 @@ CREATE TABLE rating (
   PRIMARY KEY (rating_id)
 );
 
-CREATE TABLE rule_name (
-  rule_name_id INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE rule (
+  rule_id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(125),
   description VARCHAR(125),
   json VARCHAR(125),
@@ -85,7 +85,7 @@ CREATE TABLE rule_name (
   sql_str VARCHAR(125),
   sql_part VARCHAR(125),
 
-  PRIMARY KEY (rule_name_id)
+  PRIMARY KEY (rule_id)
 );
 
 CREATE TABLE users (
