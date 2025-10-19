@@ -40,10 +40,12 @@ CREATE TABLE trade (
   trade_id INT NOT NULL AUTO_INCREMENT,
   account VARCHAR(30) NOT NULL,
   type VARCHAR(30) NOT NULL,
-  buy_quantity DOUBLE,
-  sell_quantity DOUBLE,
-  buy_price DOUBLE ,
-  sell_price DOUBLE,
+  -- Quantités à 2 décimales
+  buy_quantity DECIMAL(10,2) UNSIGNED,
+  sell_quantity DECIMAL(10,2) UNSIGNED,
+  -- Prix à 4 décimales
+  buy_price DECIMAL(10,4) UNSIGNED,
+  sell_price DECIMAL(10,4) UNSIGNED,
   trade_date TIMESTAMP,
   security VARCHAR(125),
   status VARCHAR(10),

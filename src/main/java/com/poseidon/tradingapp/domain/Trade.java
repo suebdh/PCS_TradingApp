@@ -1,11 +1,13 @@
 package com.poseidon.tradingapp.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -30,10 +32,20 @@ public class Trade {
     private String account;
     @Column(nullable = false, length = 30)
     private String type;
-    private Double buyQuantity;
-    private Double sellQuantity;
-    private Double buyPrice;
-    private Double sellPrice;
+    // Quantités avec 2 décimales (ex : 100.50)
+    @DecimalMin("0.00")
+    @Column(precision = 10, scale = 2)
+    private BigDecimal buyQuantity;
+    @DecimalMin("0.00")
+    @Column(precision = 10, scale = 2)
+    private BigDecimal sellQuantity;
+    // Prix avec 4 décimales (ex : 12.3456)
+    @DecimalMin("0.0000")
+    @Column(precision = 10, scale = 4)
+    private BigDecimal buyPrice;
+    @DecimalMin("0.0000")
+    @Column(precision = 10, scale = 4)
+    private BigDecimal sellPrice;
     private LocalDateTime tradeDate;
     @Column(length = 125)
     private String security;
