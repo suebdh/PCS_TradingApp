@@ -1,5 +1,5 @@
 -- Création des tables
-CREATE TABLE bid_list (
+CREATE TABLE IF NOT EXISTS bid_list (
   bid_list_id INT NOT NULL AUTO_INCREMENT,
   account VARCHAR(30) NOT NULL,
   type VARCHAR(30) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE bid_list (
   PRIMARY KEY (bid_list_id )
 );
 
-CREATE TABLE trade (
+CREATE TABLE IF NOT EXISTS trade (
   trade_id INT NOT NULL AUTO_INCREMENT,
   account VARCHAR(30) NOT NULL,
   type VARCHAR(30) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE trade (
   PRIMARY KEY (trade_id)
 );
 
-CREATE TABLE curve_point (
+CREATE TABLE IF NOT EXISTS curve_point (
   curve_point_id INT NOT NULL AUTO_INCREMENT,
   curve_id INT,
   as_of_date TIMESTAMP,
@@ -66,7 +66,7 @@ CREATE TABLE curve_point (
   PRIMARY KEY (curve_point_id)
 );
 
-CREATE TABLE rating (
+CREATE TABLE IF NOT EXISTS rating (
   rating_id INT NOT NULL AUTO_INCREMENT,
   moodys_rating VARCHAR(125),
   sand_p_rating VARCHAR(125),
@@ -76,7 +76,7 @@ CREATE TABLE rating (
   PRIMARY KEY (rating_id)
 );
 
-CREATE TABLE rule (
+CREATE TABLE IF NOT EXISTS rule (
   rule_id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(125),
   description VARCHAR(125),
@@ -88,7 +88,7 @@ CREATE TABLE rule (
   PRIMARY KEY (rule_id)
 );
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   user_id INT NOT NULL AUTO_INCREMENT,
   username VARCHAR(125),
   password VARCHAR(125),
