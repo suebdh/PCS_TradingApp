@@ -6,13 +6,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class CurvePointTests {
@@ -22,11 +25,15 @@ public class CurvePointTests {
 
 	@Test
 	public void curvePointTest() {
-		CurvePoint curvePoint = new CurvePoint(10, 10d, 30d);
+		// Création de l'objet via le constructeur vide et setters
+		CurvePoint curvePoint = new CurvePoint();
+		curvePoint.setCurveId(10);
+		curvePoint.setTerm(new BigDecimal("10.000"));
+		curvePoint.setValue(new BigDecimal("30.000"));
 
 		// Save
 		curvePoint = curvePointRepository.save(curvePoint);
-		assertNotNull(curvePoint.getId());
+		assertNotNull(curvePoint.getCurvePointId());
         assertEquals(10, (int) curvePoint.getCurveId());
 
 		// Update
@@ -39,7 +46,7 @@ public class CurvePointTests {
         assertFalse(listResult.isEmpty());
 
 		// Delete
-		Integer id = curvePoint.getId();
+		Integer id = curvePoint.getCurvePointId();
 		curvePointRepository.delete(curvePoint);
 		Optional<CurvePoint> curvePointList = curvePointRepository.findById(id);
 		assertFalse(curvePointList.isPresent());

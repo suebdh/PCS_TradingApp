@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class RatingTests {
@@ -22,11 +24,16 @@ public class RatingTests {
 
 	@Test
 	public void ratingTest() {
-		Rating rating = new Rating("Moodys Rating", "Sand PRating", "Fitch Rating", 10);
+		// Création de l'objet avec setters (constructeur vide + setters)
+		Rating rating = new Rating();
+		rating.setMoodysRating("Moodys Rating");
+		rating.setSandPRating("Sand PRating");
+		rating.setFitchRating("Fitch Rating");
+		rating.setOrderNumber(10);
 
 		// Save
 		rating = ratingRepository.save(rating);
-		assertNotNull(rating.getId());
+		assertNotNull(rating.getRatingId());
         assertEquals(10, (int) rating.getOrderNumber());
 
 		// Update
@@ -39,7 +46,7 @@ public class RatingTests {
         assertFalse(listResult.isEmpty());
 
 		// Delete
-		Integer id = rating.getId();
+		Integer id = rating.getRatingId();
 		ratingRepository.delete(rating);
 		Optional<Rating> ratingList = ratingRepository.findById(id);
 		assertFalse(ratingList.isPresent());

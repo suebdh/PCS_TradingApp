@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class BidTests {
@@ -22,7 +24,11 @@ public class BidTests {
 
 	@Test
 	public void bidListTest() {
-		BidList bid = new BidList("Account Test", "Type Test", 10d);
+		// Création de l'objet avec setters (constructeur vide + setters)
+		BidList bid = new BidList();
+		bid.setAccount("Account Test");
+		bid.setType("Type Test");
+		bid.setBidQuantity(10);
 
 		// Save
 		bid = bidListRepository.save(bid);
@@ -30,7 +36,7 @@ public class BidTests {
 		assertEquals(10d, bid.getBidQuantity(), 10d);
 
 		// Update
-		bid.setBidQuantity(20d);
+		bid.setBidQuantity(20);
 		bid = bidListRepository.save(bid);
 		assertEquals(20d, bid.getBidQuantity(), 20d);
 

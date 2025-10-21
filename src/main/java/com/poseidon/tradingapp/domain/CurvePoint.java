@@ -1,14 +1,13 @@
 package com.poseidon.tradingapp.domain;
 
+import jakarta.validation.constraints.DecimalMin;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
-
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import java.sql.Timestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * Entité représentant un point de courbe (CurvePoint) utilisé dans la gestion des courbes de taux.
@@ -18,28 +17,27 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "curvepoint")
+@Table(name = "curve_point")
 public class CurvePoint {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer curvePointId;
 
     private Integer curveId;
-    private Timestamp asOfDate;
-    private Double term;
-    private Double value;
-    private Timestamp creationDate;
+    private LocalDateTime asOfDate;
 
     /**
-     * Constructeur pratique pour les tests et initialisations rapides.
-     * @param curveId identifiant de la courbe
-     * @param term la maturité ou la durée
-     * @param value la valeur associée à cette maturité
+     * Chaque CurvePoint représente un point de la courbe de taux
+     * - term : maturité du point (en années fractionnaires, ex : 1.0417 = 1 an et 15 jours, 3 mois → 0.25 an, 2 ans + 7 mois → 2.5833 ans).
+     * - value : taux ou rendement associé à cette maturité (ex : 1,73 % → 0.0173, 0,25 % → 0.0025)
      */
-    public CurvePoint(Integer curveId, Double term, Double value) {
-        this.curveId = curveId;
-        this.term = term;
-        this.value = value;
-    }
+    @DecimalMin("0.0")
+    @Column(precision = 10, scale = 4)
+    private BigDecimal term;
+    @DecimalMin("0.0")
+    @Column(precision = 10, scale = 4)
+    private BigDecimal value;
+
+    private LocalDateTime creationDate;
 }
