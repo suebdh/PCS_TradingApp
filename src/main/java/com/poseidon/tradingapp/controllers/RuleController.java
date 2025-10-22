@@ -1,13 +1,14 @@
 package com.poseidon.tradingapp.controllers;
 
 import com.poseidon.tradingapp.domain.Rule;
+import com.poseidon.tradingapp.repositories.RuleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
 
@@ -15,10 +16,13 @@ import jakarta.validation.Valid;
 public class RuleController {
     // TODO: Inject Rule service
 
-    @RequestMapping("/rule/list")
+    @Autowired
+    private RuleRepository ruleRepository;
+
+    @GetMapping("/rule/list")
     public String home(Model model)
     {
-        // TODO: find all Rule, add to model
+        model.addAttribute("rules", ruleRepository.findAll());
         return "rule/list";
     }
 
