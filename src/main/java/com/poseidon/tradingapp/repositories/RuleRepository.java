@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RuleRepository extends JpaRepository<Rule, Integer> {
+    boolean existsByName(String name);
 }

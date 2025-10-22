@@ -16,7 +16,7 @@
 | **MySQL**                | 8.x     | Base de données principale                                |
 | **H2**                   | 2.x     | Base en mémoire pour les tests                            |
 | **Lombok**               | 1.18.30 | Génération automatique des getters/setters                |
-| **dotenv (java-dotenv)** | 5.2.2   | Gestion sécurisée des variables d’environnement (.env)    |
+| **dotenv (java-dotenv)** | 5.2.2   | Gestion sécurisée des variables d'environnement (.env)    |
 | **JUnit 5 (Jupiter)**    | 5.x     | Framework de tests unitaires                              |
 | **Spring Security**      | 6.x     | Authentification *session-based* (non-JWT)                |
 
