@@ -64,6 +64,10 @@ public class RuleController {
 
     @GetMapping("/rule/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+        Rule dummy = new Rule();
+        dummy.setRuleId(id);
+        dummy.setName("TEST Rule " + id);
+        model.addAttribute("rule", dummy);
         return "rule/update";
     }
 
