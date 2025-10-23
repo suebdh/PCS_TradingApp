@@ -3,6 +3,7 @@ package com.poseidon.tradingapp.controllers;
 import com.poseidon.tradingapp.domain.Rule;
 import com.poseidon.tradingapp.dto.RuleDto;
 import com.poseidon.tradingapp.exceptions.RuleAlreadyExistsException;
+import com.poseidon.tradingapp.exceptions.RuleNotFoundException;
 import com.poseidon.tradingapp.services.RuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,11 +65,16 @@ public class RuleController {
 
     @GetMapping("/rule/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        Rule dummy = new Rule();
-        dummy.setRuleId(id);
-        dummy.setName("TEST Rule " + id);
-        model.addAttribute("rule", dummy);
-        return "rule/update";
+        try {
+            RuleDto ruleDto = ruleService.getRuleById(id);
+            model.addAttribute("rule", ruleDto);
+            return "rule/update";
+        } catch (RuleNotFoundException e) {
+            // Si la règle n'existe pas → redirection vers la liste avec un message simple
+            model.addAttribute("errorMessage", e.getMessage());
+            return "redirect:/rule/list";
+        }
+
     }
 
     @PostMapping("/rule/update/{id}")

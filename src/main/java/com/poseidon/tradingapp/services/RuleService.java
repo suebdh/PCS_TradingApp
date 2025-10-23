@@ -3,10 +3,12 @@ package com.poseidon.tradingapp.services;
 import com.poseidon.tradingapp.domain.Rule;
 import com.poseidon.tradingapp.dto.RuleDto;
 import com.poseidon.tradingapp.exceptions.RuleAlreadyExistsException;
+import com.poseidon.tradingapp.exceptions.RuleNotFoundException;
 import com.poseidon.tradingapp.repositories.RuleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service métier pour la gestion des règles (Rule)
@@ -42,6 +44,13 @@ public class RuleService {
         return ruleRepository.findAll();
     }
 
+    public RuleDto getRuleById(Integer id) {
+        Optional<Rule> ruleOpt = ruleRepository.findById(id);
+        if (ruleOpt.isEmpty()) {
+            throw new RuleNotFoundException("Aucune règle trouvée avec l'ID " + id);
+        }
+        return convertToDto(ruleOpt.get());
+    }
     /**
      * Convertit un RuleDto vers une entité Rule.
      */
@@ -68,6 +77,7 @@ public class RuleService {
         dto.setJson(entity.getJson());
         dto.setTemplate(entity.getTemplate());
         dto.setSqlStr(entity.getSqlStr());
+        dto.setSqlPart(entity.getSqlPart());
         return dto;
     }
 }
