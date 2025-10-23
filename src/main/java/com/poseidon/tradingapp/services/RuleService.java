@@ -51,6 +51,31 @@ public class RuleService {
         }
         return convertToDto(ruleOpt.get());
     }
+
+    /**
+     * Met à jour une règle existante.
+     */
+    public Rule updateRule(Integer id, RuleDto dto) {
+        Rule existingRule = ruleRepository.findById(id)
+                .orElseThrow(() -> new RuleNotFoundException("Aucune règle trouvée avec l'ID " + id));
+
+        // Vérifie que le nom n'appartient pas déjà à une autre règle
+        if (!existingRule.getName().equals(dto.getName()) && ruleRepository.existsByName(dto.getName())) {
+            throw new RuleAlreadyExistsException("Une autre règle porte déjà le nom : " + dto.getName());
+        }
+
+        // Met à jour les champs
+        existingRule.setName(dto.getName());
+        existingRule.setDescription(dto.getDescription());
+        existingRule.setJson(dto.getJson());
+        existingRule.setTemplate(dto.getTemplate());
+        existingRule.setSqlStr(dto.getSqlStr());
+        existingRule.setSqlPart(dto.getSqlPart());
+
+        // Sauvegarde et retourne l'entité mise à jour
+        return ruleRepository.save(existingRule);
+    }
+
     /**
      * Convertit un RuleDto vers une entité Rule.
      */

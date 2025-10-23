@@ -1,6 +1,5 @@
 package com.poseidon.tradingapp.controllers;
 
-import com.poseidon.tradingapp.domain.Rule;
 import com.poseidon.tradingapp.dto.RuleDto;
 import com.poseidon.tradingapp.exceptions.RuleAlreadyExistsException;
 import com.poseidon.tradingapp.exceptions.RuleNotFoundException;
@@ -78,8 +77,23 @@ public class RuleController {
     }
 
     @PostMapping("/rule/update/{id}")
-    public String updateRule(@PathVariable("id") Integer id, @Valid Rule rule,
+    public String updateRule(@PathVariable("id") Integer id, @Valid @ModelAttribute("rule") RuleDto ruleDto,
                              BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            // Si des erreurs de validation, on reste sur la page d’édition de la règle
+            return "rule/update";
+        }
+
+        try {
+            ruleService.updateRule(id, ruleDto);
+        } catch (RuleNotFoundException e) {
+            result.rejectValue("name", "error.rule", e.getMessage());
+            return "rule/update";
+        } catch (RuleAlreadyExistsException e) {
+            result.rejectValue("name", "error.rule", e.getMessage());
+            return "rule/update";
+        }
+
         return "redirect:/rule/list";
     }
 
