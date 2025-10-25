@@ -76,6 +76,12 @@ public class RuleService {
         return ruleRepository.save(existingRule);
     }
 
+    public void deleteRule(Integer id) {
+        Rule rule = ruleRepository.findById(id)
+                .orElseThrow(() -> new RuleNotFoundException("Aucune règle trouvée avec l'ID " + id));
+        ruleRepository.delete(rule);
+    }
+
     /**
      * Convertit un RuleDto vers une entité Rule.
      */

@@ -99,6 +99,11 @@ public class RuleController {
 
     @GetMapping("/rule/delete/{id}")
     public String deleteRule(@PathVariable("id") Integer id, Model model) {
+        try {
+            ruleService.deleteRule(id);
+        } catch (RuleNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/rule/list";
     }
 }
