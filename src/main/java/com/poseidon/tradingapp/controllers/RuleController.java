@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.validation.Valid;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class RuleController {
@@ -98,11 +99,12 @@ public class RuleController {
     }
 
     @GetMapping("/rule/delete/{id}")
-    public String deleteRule(@PathVariable("id") Integer id, Model model) {
+    public String deleteRule(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             ruleService.deleteRule(id);
+            redirectAttributes.addFlashAttribute("successMessage", "La règle a été supprimée avec succès !");
         } catch (RuleNotFoundException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
         return "redirect:/rule/list";
     }

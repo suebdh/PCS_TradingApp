@@ -76,6 +76,9 @@ public class RuleService {
         return ruleRepository.save(existingRule);
     }
 
+    /**
+     * Supprime une règle existante par son ID.
+     */
     public void deleteRule(Integer id) {
         Rule rule = ruleRepository.findById(id)
                 .orElseThrow(() -> new RuleNotFoundException("Aucune règle trouvée avec l'ID " + id));
