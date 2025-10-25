@@ -44,7 +44,7 @@ public class RuleController {
      * Valide le formulaire et crée une nouvelle règle.
      */
     @PostMapping("/rule/validate")
-    public String validate(@Valid @ModelAttribute("rule") RuleDto ruleDto, BindingResult result, Model model) {
+    public String validate(@Valid @ModelAttribute("rule") RuleDto ruleDto, BindingResult result, RedirectAttributes redirectAttributes) {
         // Si des champs obligatoires sont manquants ou invalides, on reste sur la page d'ajout de règle
         if (result.hasErrors()) {
             return "rule/add";
@@ -53,6 +53,7 @@ public class RuleController {
         // Enregistre la règle dans la base
         try {
             ruleService.createRule(ruleDto);
+            redirectAttributes.addFlashAttribute("successMessage", "La règle a été ajoutée avec succès !");
         } catch (RuleAlreadyExistsException e) {
             // Si une règle du même nom existe déjà, on affiche un message d'erreur
             result.rejectValue("name", "error.rule", e.getMessage());
@@ -81,7 +82,7 @@ public class RuleController {
     public String updateRule(@PathVariable("id") Integer id, @Valid @ModelAttribute("rule") RuleDto ruleDto,
                              BindingResult result, Model model) {
         if (result.hasErrors()) {
-            // Si des erreurs de validation, on reste sur la page d’édition de la règle
+            // Si des erreurs de validation, on reste sur la page d'édition de la règle
             return "rule/update";
         }
 
