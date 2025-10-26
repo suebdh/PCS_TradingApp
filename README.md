@@ -20,6 +20,13 @@
 | **JUnit 5 (Jupiter)**    | 5.x     | Framework de tests unitaires                              |
 | **Spring Security**      | 6.x     | Authentification *session-based* (non-JWT)                |
 
+## Fonctionnalités implémentées
+
+- Gestion des **règles métier (Rule)** : création, mise à jour, suppression, liste, validation des doublons
+- Gestion des messages utilisateur centralisée via `MessageUtils`
+- Logs applicatifs ajoutés pour tracer les actions clés (ajout, édition, suppression)
+- Architecture conforme au modèle MVC (Controller ↔ Service ↔ Repository)
+- En cours : mise en place des tests unitaires et d'intégration (JUnit 5)
 
 ## Setup with Intellij IDE
 1. Create project from Initializr: File > New > project > Spring Initializr
@@ -31,10 +38,14 @@
 4. Create database with name "demo" as configuration in application.properties
 5. Run sql script to create table doc/data.sql
 
-## Implement a Feature
-1. Create mapping domain class and place in package com.poseidon.tradingapp.domain
-2. Create repository class and place in package com.poseidon.tradingapp.repositories
-3. Create controller class and place in package com.poseidon.tradingapp.controllers
+## Structure du projet et bonnes pratiques
+
+1. **Domain** → Contient les entités JPA (ex : `Rule`)
+2. **Repositories** → Interfaces Spring Data JPA
+3. **Services** → Logique métier, validation, conversions DTO ↔ entité
+4. **Controllers** → Gestion des routes web et messages flash
+5. **Utils** → Classes utilitaires (ex : `MessageUtils`)
+6. **Config** → Configuration Spring (sécurité, environnement, etc.)
 
 ## Security
 1. Create user service to load user from  database and place in package com.poseidon.tradingapp.services
