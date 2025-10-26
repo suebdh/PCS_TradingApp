@@ -65,14 +65,14 @@ public class RuleController {
     }
 
     @GetMapping("/rule/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+    public String showUpdateForm(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             RuleDto ruleDto = ruleService.getRuleById(id);
             model.addAttribute("rule", ruleDto);
             return "rule/update";
         } catch (RuleNotFoundException e) {
             // Si la règle n'existe pas → redirection vers la liste avec un message simple
-            model.addAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/rule/list";
         }
 
@@ -80,7 +80,7 @@ public class RuleController {
 
     @PostMapping("/rule/update/{id}")
     public String updateRule(@PathVariable("id") Integer id, @Valid @ModelAttribute("rule") RuleDto ruleDto,
-                             BindingResult result, Model model) {
+                             BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             // Si des erreurs de validation, on reste sur la page d'édition de la règle
             return "rule/update";
@@ -88,9 +88,10 @@ public class RuleController {
 
         try {
             ruleService.updateRule(id, ruleDto);
+            redirectAttributes.addFlashAttribute("successMessage","La règle a été mise à jour avec succès !");
         } catch (RuleNotFoundException e) {
-            result.rejectValue("name", "error.rule", e.getMessage());
-            return "rule/update";
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/rule/list";
         } catch (RuleAlreadyExistsException e) {
             result.rejectValue("name", "error.rule", e.getMessage());
             return "rule/update";
