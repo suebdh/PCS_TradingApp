@@ -4,6 +4,7 @@ import com.poseidon.tradingapp.dto.RuleDto;
 import com.poseidon.tradingapp.exceptions.RuleAlreadyExistsException;
 import com.poseidon.tradingapp.exceptions.RuleNotFoundException;
 import com.poseidon.tradingapp.services.RuleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import jakarta.validation.Valid;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+@Slf4j
 @Controller
 public class RuleController {
 
@@ -55,8 +57,9 @@ public class RuleController {
             ruleService.createRule(ruleDto);
             redirectAttributes.addFlashAttribute("successMessage", "La règle a été ajoutée avec succès !");
         } catch (RuleAlreadyExistsException e) {
-            // Si une règle du même nom existe déjà, on affiche un message d'erreur
-            result.rejectValue("name", "error.rule", e.getMessage());
+            // Message utilisateur clair + message technique pour le dev
+            result.rejectValue("name", "error.rule", "Une règle avec ce nom existe déjà");
+            log.warn("Création refusée (doublon) : {}", e.getMessage());
             return "rule/add";
         }
 
@@ -72,7 +75,8 @@ public class RuleController {
             return "rule/update";
         } catch (RuleNotFoundException e) {
             // Si la règle n'existe pas → redirection vers la liste avec un message simple
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            log.warn("Accès edition impossible (id inexistant) : {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "La règle demandée pour édition n'existe pas ou a été supprimée");
             return "redirect:/rule/list";
         }
 
@@ -89,15 +93,16 @@ public class RuleController {
         try {
             ruleService.updateRule(id, ruleDto);
             redirectAttributes.addFlashAttribute("successMessage","La règle a été mise à jour avec succès !");
+            return "redirect:/rule/list";
         } catch (RuleNotFoundException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            log.warn("Mise à jour impossible (id inexistant) : {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Mise à jour impossible : La règle n'existe pas");
             return "redirect:/rule/list";
         } catch (RuleAlreadyExistsException e) {
-            result.rejectValue("name", "error.rule", e.getMessage());
+            log.warn("Mise à jour refusée (doublon) : {}", e.getMessage());
+            result.rejectValue("name", "error.rule", "Une règle avec ce nom existe déjà");
             return "rule/update";
         }
-
-        return "redirect:/rule/list";
     }
 
     @GetMapping("/rule/delete/{id}")
@@ -106,7 +111,8 @@ public class RuleController {
             ruleService.deleteRule(id);
             redirectAttributes.addFlashAttribute("successMessage", "La règle a été supprimée avec succès !");
         } catch (RuleNotFoundException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            log.warn("Suppression impossible (id inexistant) : {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Suppression impossible : la règle n'existe pas");
         }
         return "redirect:/rule/list";
     }

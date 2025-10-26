@@ -47,7 +47,7 @@ public class RuleService {
     public RuleDto getRuleById(Integer id) {
         Optional<Rule> ruleOpt = ruleRepository.findById(id);
         if (ruleOpt.isEmpty()) {
-            throw new RuleNotFoundException("Aucune règle trouvée avec l'ID " + id);
+            throw new RuleNotFoundException("Impossible d'afficher la règle : ID " + id);
         }
         return convertToDto(ruleOpt.get());
     }
@@ -57,7 +57,7 @@ public class RuleService {
      */
     public Rule updateRule(Integer id, RuleDto dto) {
         Rule existingRule = ruleRepository.findById(id)
-                .orElseThrow(() -> new RuleNotFoundException("Aucune règle trouvée avec l'ID " + id));
+                .orElseThrow(() -> new RuleNotFoundException("Mise à jour impossible : aucune règle trouvée avec l'ID " + id));
 
         // Vérifie que le nom n'appartient pas déjà à une autre règle
         if (!existingRule.getName().equals(dto.getName()) && ruleRepository.existsByName(dto.getName())) {
@@ -81,7 +81,7 @@ public class RuleService {
      */
     public void deleteRule(Integer id) {
         Rule rule = ruleRepository.findById(id)
-                .orElseThrow(() -> new RuleNotFoundException("Aucune règle trouvée avec l'ID " + id));
+                .orElseThrow(() -> new RuleNotFoundException("Suppression impossible : aucune règle trouvée avec l'ID " + id));
         ruleRepository.delete(rule);
     }
 
