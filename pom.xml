@@ -38,6 +38,7 @@
         <java.version>17</java.version> <!-- set the version of java -->
         <jacoco.version>0.8.12</jacoco.version> <!-- set the version of jacoco -->
         <lombok.version>1.18.30</lombok.version> <!-- set the version of lombok -->
+        <mapstruct.version>1.6.3</mapstruct.version> <!-- set the version of mapstruct -->
     </properties>
 
     <dependencies>
@@ -92,6 +93,28 @@
             <artifactId>java-dotenv</artifactId>
             <version>5.2.2</version>
         </dependency>
+        <!-- =============================================================== -->
+        <!-- === MapStruct : Moteur de génération automatique de mappers === -->
+        <!-- =============================================================== -->
+        <!-- MapStruct simplifie la conversion entre les entités JPA et les DTOs.
+             Il génère automatiquement le code de mapping (ex. RuleMapperImpl.java) à la compilation, à partir d'interfaces annotées avec @Mapper.
+             Pas de code "convertToDto" / "convertToEntity" manuel -->
+        <!-- Librairie principale (runtime) :
+        Fournit les annotations (@Mapper, @Mapping, etc.) utilisées dans le code source -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <!-- Processeur d'annotations (compiler time only) :
+        C'est lui qui, pendant la compilation, analyse les interfaces @Mapper et génère automatiquement les classes d'implémentation (ex : RuleMapperImpl).
+        Marqué en <scope>provided</scope> pour ne pas être inclus dans le JAR final, car il n'est nécessaire qu'au moment de la compilation. -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -142,6 +165,11 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
