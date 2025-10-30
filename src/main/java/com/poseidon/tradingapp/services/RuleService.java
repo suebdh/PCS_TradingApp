@@ -4,6 +4,7 @@ import com.poseidon.tradingapp.domain.Rule;
 import com.poseidon.tradingapp.dto.RuleDto;
 import com.poseidon.tradingapp.exceptions.RuleAlreadyExistsException;
 import com.poseidon.tradingapp.exceptions.RuleNotFoundException;
+import com.poseidon.tradingapp.mappers.RuleMapper;
 import com.poseidon.tradingapp.repositories.RuleRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,50 +13,58 @@ import java.util.Optional;
 
 /**
  * Service métier pour la gestion des règles (Rule)
- * Contient la logique de validation, de vérification de doublons et de conversion DTO - Entité.
+ * Contient la logique de validation, de vérification de doublons et de conversion DTO - Entité via MapStruct
  */
 @Service
 public class RuleService {
     private final RuleRepository ruleRepository;
+    private final RuleMapper ruleMapper;
 
-    public RuleService (RuleRepository ruleRepository){
+    public RuleService (RuleRepository ruleRepository, RuleMapper ruleMapper){
         this.ruleRepository=ruleRepository;
+        this.ruleMapper = ruleMapper;
     }
 
     /**
      * Crée une nouvelle règle à partir d'un DTO.
      * Vérifie que le nom n'existe pas déjà avant d'enregistrer.
      */
-    public Rule createRule(RuleDto dto) {
+    public RuleDto createRule(RuleDto dto) {
         // vérification des doublons
         if (ruleRepository.existsByName(dto.getName())){
             throw new RuleAlreadyExistsException("Une règle porte le même nom : " + dto.getName());
         }
-        // conversion DTO → Entity
-        Rule rule = convertToEntity(dto);
-        // sauvegarde en base
-        return ruleRepository.save(rule);
+        // Sauvegarde l'entité et retourne le DTO créé
+        Rule saved = ruleRepository.save(ruleMapper.toEntity(dto));
+        return ruleMapper.toDto(saved);
     }
 
     /**
      * Récupère toutes les règles existantes.
      */
-    public List<Rule> getAllRules() {
-        return ruleRepository.findAll();
+    public List<RuleDto> getAllRules() {
+
+        return ruleRepository.findAll()
+                .stream()
+                .map(ruleMapper::toDto)
+                .toList();
     }
 
+    /**
+     * Récupère une règle par son ID.
+     */
     public RuleDto getRuleById(Integer id) {
         Optional<Rule> ruleOpt = ruleRepository.findById(id);
         if (ruleOpt.isEmpty()) {
             throw new RuleNotFoundException("Impossible d'afficher la règle : ID " + id);
         }
-        return convertToDto(ruleOpt.get());
+        return ruleMapper.toDto(ruleOpt.get());
     }
 
     /**
      * Met à jour une règle existante.
      */
-    public Rule updateRule(Integer id, RuleDto dto) {
+    public RuleDto updateRule(Integer id, RuleDto dto) {
         Rule existingRule = ruleRepository.findById(id)
                 .orElseThrow(() -> new RuleNotFoundException("Mise à jour impossible : aucune règle trouvée avec l'ID " + id));
 
@@ -64,16 +73,12 @@ public class RuleService {
             throw new RuleAlreadyExistsException("Une autre règle porte déjà le nom : " + dto.getName());
         }
 
-        // Met à jour les champs
-        existingRule.setName(dto.getName());
-        existingRule.setDescription(dto.getDescription());
-        existingRule.setJson(dto.getJson());
-        existingRule.setTemplate(dto.getTemplate());
-        existingRule.setSqlStr(dto.getSqlStr());
-        existingRule.setSqlPart(dto.getSqlPart());
+        // Met à jour les champs de l'entité existante à partir du DTO (MapStruct gère le mapping champ par champ automatiquement)
+        ruleMapper.updateEntityFromDto(dto, existingRule);
 
-        // Sauvegarde et retourne l'entité mise à jour
-        return ruleRepository.save(existingRule);
+        // Sauvegarde l'entité et retourne le DTO mis à jour
+        Rule updated = ruleRepository.save(existingRule);
+        return ruleMapper.toDto(updated);
     }
 
     /**
@@ -83,35 +88,5 @@ public class RuleService {
         Rule rule = ruleRepository.findById(id)
                 .orElseThrow(() -> new RuleNotFoundException("Suppression impossible : aucune règle trouvée avec l'ID " + id));
         ruleRepository.delete(rule);
-    }
-
-    /**
-     * Convertit un RuleDto vers une entité Rule.
-     */
-    private Rule convertToEntity(RuleDto dto) {
-        Rule entity = new Rule();
-        entity.setRuleId(dto.getRuleId());
-        entity.setName(dto.getName());
-        entity.setDescription(dto.getDescription());
-        entity.setJson(dto.getJson());
-        entity.setTemplate(dto.getTemplate());
-        entity.setSqlStr(dto.getSqlStr());
-        entity.setSqlPart(dto.getSqlPart());
-        return entity;
-    }
-
-    /**
-     * Convertit une entité Rule vers un RuleDto.
-     */
-    private RuleDto convertToDto(Rule entity) {
-        RuleDto dto = new RuleDto();
-        dto.setRuleId(entity.getRuleId());
-        dto.setName(entity.getName());
-        dto.setDescription(entity.getDescription());
-        dto.setJson(entity.getJson());
-        dto.setTemplate(entity.getTemplate());
-        dto.setSqlStr(entity.getSqlStr());
-        dto.setSqlPart(entity.getSqlPart());
-        return dto;
     }
 }

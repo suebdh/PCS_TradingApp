@@ -6,7 +6,6 @@ import com.poseidon.tradingapp.exceptions.RuleNotFoundException;
 import com.poseidon.tradingapp.services.RuleService;
 import com.poseidon.tradingapp.utils.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,14 +21,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class RuleController {
 
-    @Autowired
-    private RuleService ruleService;
+    private final RuleService ruleService;
+
+    public RuleController(RuleService ruleService) {
+        this.ruleService = ruleService;
+    }
 
     /**
      * Affiche la liste des règles existantes.
      */
     @GetMapping("/rule/list")
     public String home(Model model) {
+        log.info("GET /rule/list - Récupération de la liste des règles");
         model.addAttribute("rules", ruleService.getAllRules());
         return "rule/list";
     }
@@ -39,6 +42,7 @@ public class RuleController {
      */
     @GetMapping("/rule/add")
     public String showAddForm(Model model) {
+        log.info("GET /rule/add - Affichage du formulaire d'ajout de règle");
         model.addAttribute("rule", new RuleDto());
         return "rule/add";
     }
@@ -48,8 +52,11 @@ public class RuleController {
      */
     @PostMapping("/rule/validate")
     public String validate(@Valid @ModelAttribute("rule") RuleDto ruleDto, BindingResult result, RedirectAttributes redirectAttributes) {
+        log.debug("POST /rule/validate - Données reçues : {}", ruleDto);
+
         // Si des champs obligatoires sont manquants ou invalides, on reste sur la page d'ajout de règle
         if (result.hasErrors()) {
+            log.warn("Validation échouée pour la création de règle : {}", ruleDto.getName());
             return "rule/add";
         }
 
@@ -60,8 +67,8 @@ public class RuleController {
             log.info("Règle ajoutée avec succès : {}", ruleDto.getName());
         } catch (RuleAlreadyExistsException e) {
             // Message utilisateur clair + message technique pour le dev
-            result.rejectValue("name", "error.rule", MessageUtils.RULE_DUPLICATE);
             log.warn("Création refusée (doublon) : {}", e.getMessage());
+            result.rejectValue("name", "error.rule", MessageUtils.RULE_DUPLICATE);
             return "rule/add";
         }
 
@@ -71,6 +78,7 @@ public class RuleController {
 
     @GetMapping("/rule/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
+        log.info("GET /rule/update/{} - Chargement du formulaire d'édition", id);
         try {
             RuleDto ruleDto = ruleService.getRuleById(id);
             model.addAttribute("rule", ruleDto);
@@ -87,7 +95,9 @@ public class RuleController {
     @PostMapping("/rule/update/{id}")
     public String updateRule(@PathVariable("id") Integer id, @Valid @ModelAttribute("rule") RuleDto ruleDto,
                              BindingResult result, RedirectAttributes redirectAttributes) {
+        log.debug("POST /rule/update/{} - Données reçues : {}", id, ruleDto);
         if (result.hasErrors()) {
+            log.warn("Validation échouée pour la mise à jour de la règle id={}", id);
             // Si des erreurs de validation, on reste sur la page d'édition de la règle
             return "rule/update";
         }
@@ -110,6 +120,7 @@ public class RuleController {
 
     @GetMapping("/rule/delete/{id}")
     public String deleteRule(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        log.info("GET /rule/delete/{} - Suppression d'une règle", id);
         try {
             ruleService.deleteRule(id);
             redirectAttributes.addFlashAttribute("successMessage", MessageUtils.RULE_DELETE_SUCCESS);
