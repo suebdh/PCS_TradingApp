@@ -45,13 +45,27 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>3.1.0</version>
             <scope>test</scope>
+        </dependency>
+        <!--
+        Sécurité : mise à jour forcée de Logback pour corriger la vulnérabilité CVE-2025-11226.
+        Les versions ≤ 1.5.18 de logback core étaient vulnérables (exécution conditionnelle via logback.xml).
+        Passage explicite en 1.5.20 (core + classic) en attendant la mise à jour du BOM Spring Boot.
+        Réf. : https://nvd.nist.gov/vuln/detail/CVE-2025-11226
+        -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.5.20</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.20</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>3.1.0</version>
         </dependency>
         <!-- Dépendances Spring Boot -->
         <!-- Provides the necessary components to build web applications using Spring MVC.
@@ -67,7 +81,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>3.1.0</version>
+        </dependency>
+        <!-- Tests de sécurité Spring (MockMvc + @WithMockUser, etc.) -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
