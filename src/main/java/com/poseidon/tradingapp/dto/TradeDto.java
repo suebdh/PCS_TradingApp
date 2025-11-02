@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 public class TradeDto {
 
     // === CHAMPS PRINCIPAUX (obligatoires) ===
+    private Integer tradeId; // Ajout nécessaire pour Thymeleaf et les routes d'update/delete
 
     @NotBlank(message = "Le compte (account) est obligatoire.")
     @Size(max = 30, message = "Le compte ne doit pas dépasser 30 caractères.")
