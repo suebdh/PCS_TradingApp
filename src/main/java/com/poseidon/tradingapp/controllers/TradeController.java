@@ -3,6 +3,7 @@ package com.poseidon.tradingapp.controllers;
 import com.poseidon.tradingapp.domain.Trade;
 import com.poseidon.tradingapp.exceptions.TradeNotFoundException;
 import com.poseidon.tradingapp.services.TradeService;
+import com.poseidon.tradingapp.utils.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,10 +50,9 @@ public class TradeController {
      * Valide et enregistre un nouveau trade
      */
     @PostMapping("/validate")
-    public String validate(@ModelAttribute("trade") Trade trade,
+    public String validate(@Valid @ModelAttribute("trade") Trade trade,
                            BindingResult result,
-                           RedirectAttributes redirectAttributes,
-                           Model model) {
+                           RedirectAttributes redirectAttributes) {
         log.info("POST /trade/validate - Validation et enregistrement d'un nouveau trade : {}", trade.getAccount());
 
         if (result.hasErrors()) {
@@ -61,7 +61,7 @@ public class TradeController {
         }
 
         tradeService.save(trade);
-        redirectAttributes.addFlashAttribute("successMessage", "Trade ajouté avec succès !");
+        redirectAttributes.addFlashAttribute("successMessage", MessageUtils.TRADE_ADD_SUCCESS);
         log.info("Trade ajouté avec succès : {}", trade.getAccount());
         return "redirect:/trade/list";
     }
@@ -78,7 +78,7 @@ public class TradeController {
             return "trade/update";
         } catch (TradeNotFoundException e) {
             log.error("Trade introuvable avec id={}", id);
-            redirectAttributes.addFlashAttribute("errorMessage", "Trade introuvable !");
+            redirectAttributes.addFlashAttribute("errorMessage", MessageUtils.TRADE_EDIT_NOT_FOUND);
             return "redirect:/trade/list";
         }
     }
@@ -101,11 +101,11 @@ public class TradeController {
 
         try {
             tradeService.update(id, trade);
-            redirectAttributes.addFlashAttribute("successMessage", "Trade mis à jour avec succès !");
+            redirectAttributes.addFlashAttribute("successMessage", MessageUtils.TRADE_UPDATE_SUCCESS);
             log.info("Trade id={} mis à jour avec succès", id);
         } catch (TradeNotFoundException e) {
             log.error("Erreur lors de la mise à jour : Trade id={} introuvable", id);
-            redirectAttributes.addFlashAttribute("errorMessage", "Mise à jour impossible : Trade introuvable !");
+            redirectAttributes.addFlashAttribute("errorMessage", MessageUtils.TRADE_UPDATE_NOT_FOUND);
         }
 
         return "redirect:/trade/list";
@@ -120,10 +120,11 @@ public class TradeController {
 
         try {
             tradeService.delete(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Trade supprimé avec succès !");
+            redirectAttributes.addFlashAttribute("successMessage", MessageUtils.TRADE_DELETE_SUCCESS);
             log.info("Trade id={} supprimé avec succès", id);
         } catch (TradeNotFoundException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Suppression impossible : Trade introuvable !");
+            log.error("Erreur lors de la suppression : Trade id={} introuvable", id);
+            redirectAttributes.addFlashAttribute("errorMessage", MessageUtils.TRADE_DELETE_NOT_FOUND);
         }
         return "redirect:/trade/list";
     }
