@@ -1,7 +1,9 @@
 package com.poseidon.tradingapp.services;
 
 import com.poseidon.tradingapp.domain.Trade;
+import com.poseidon.tradingapp.dto.TradeDto;
 import com.poseidon.tradingapp.exceptions.TradeNotFoundException;
+import com.poseidon.tradingapp.mappers.TradeMapper;
 import com.poseidon.tradingapp.repositories.TradeRepository;
 import org.springframework.stereotype.Service;
 
@@ -9,57 +11,71 @@ import java.util.List;
 
 /**
  * Service métier pour la gestion des transactions (Trade)
- * Contient la logique de manipulation et de validation avant interaction avec la base de données
+ * Contient la logique de validation et la conversion entre DTO et entité via MapStruct
  */
 @Service
 public class TradeService {
 
     private final TradeRepository tradeRepository;
+    private final TradeMapper tradeMapper;
 
-    public TradeService(TradeRepository tradeRepository) {
+    public TradeService(TradeRepository tradeRepository, TradeMapper tradeMapper) {
         this.tradeRepository = tradeRepository;
+        this.tradeMapper = tradeMapper;
     }
 
     /**
      * Récupère la liste complète des trades.
-     * @return liste de tous les Trade
+     * @return liste de tous les TradeDto
      */
-    public List<Trade> findAll() {
-        return tradeRepository.findAll();
+    public List<TradeDto> findAll() {
+
+        return tradeRepository.findAll()
+                .stream()
+                .map(tradeMapper::toDto)
+                .toList();
     }
 
     /**
      * Recherche un Trade par son ID.
      * @param id identifiant du Trade
-     * @return Trade correspondant
+     * @return TradeDto correspondant
      * @throws TradeNotFoundException si l'id est introuvable
      */
-    public Trade findById(Integer id) {
-        return tradeRepository.findById(id)
+    public TradeDto findById(Integer id) {
+
+        Trade trade = tradeRepository.findById(id)
                 .orElseThrow(() -> new TradeNotFoundException("Trade non trouvé avec l'id : " + id));
+        return tradeMapper.toDto(trade);
     }
 
     /**
-     * Crée un nouveau Trade dans la base de données.
-     * @param trade objet Trade à sauvegarder
-     * @return Trade sauvegardé
+     * Crée un nouveau Trade dans la base de données à partir d'un DTO.
+     * @param dto données du trade à sauvegarder
+     * @return TradeDto sauvegardé
      */
-    public Trade save(Trade trade) {
-        //TODO vérifier les doublons ou appliquer d'autres règles métiers
-        return tradeRepository.save(trade);
+    public TradeDto create(TradeDto dto) {
+        Trade entity = tradeMapper.toEntity(dto);
+        Trade saved = tradeRepository.save(entity);
+        return tradeMapper.toDto(saved);
     }
 
     /**
      * Met à jour un Trade existant.
      * @param id identifiant du Trade à mettre à jour
-     * @param trade données à appliquer
-     * @return Trade mis à jour
+     * @param dto nouvelles données à appliquer
+     * @return TradeDto mis à jour
      * @throws TradeNotFoundException si l'id n'existe pas
      */
-    public Trade update(Integer id, Trade trade) {
-        Trade existingTrade = findById(id); // lève une exception si introuvable
-        trade.setTradeId(existingTrade.getTradeId());
-        return tradeRepository.save(trade);
+    public TradeDto update(Integer id, TradeDto dto) {
+        Trade existingTrade = tradeRepository.findById(id)
+                .orElseThrow(() -> new TradeNotFoundException("Mise à jour impossible : Trade introuvable avec l'id : " + id));
+
+        // Copie les champs du DTO vers l'entité existante
+        tradeMapper.updateEntityFromDto(dto, existingTrade);
+
+        Trade updated = tradeRepository.save(existingTrade);
+        return tradeMapper.toDto(updated);
     }
 
     /**
@@ -68,8 +84,9 @@ public class TradeService {
      * @throws TradeNotFoundException si l'id n'existe pas
      */
     public void delete(Integer id) {
-        Trade existingTrade = findById(id);
-        tradeRepository.delete(existingTrade);
+        Trade trade = tradeRepository.findById(id)
+                .orElseThrow(() -> new TradeNotFoundException("Suppression impossible : Trade introuvable avec l'id : " + id));
+        tradeRepository.delete(trade);
     }
 
 }
