@@ -36,4 +36,20 @@ public final class MessageUtils {
     // --- SUPPRESSION ---
     public static final String TRADE_DELETE_SUCCESS = "Le trade a été supprimé avec succès !";
     public static final String TRADE_DELETE_NOT_FOUND = "Suppression impossible : le trade n'existe pas ou a déjà été supprimé !";
+
+    // ========================================================================
+    // === BIDLIST (Offres) ===
+
+    // --- AJOUT ---
+    public static final String BID_ADD_SUCCESS = "L'offre (Bid) a été ajoutée avec succès !";
+
+    // --- MISE À JOUR / ÉDITION ---
+    public static final String BID_UPDATE_SUCCESS = "L'offre (Bid) a été mise à jour avec succès !";
+    public static final String BID_UPDATE_NOT_FOUND = "Mise à jour impossible : l'offre n'existe pas ou a été supprimée !";
+    public static final String BID_EDIT_NOT_FOUND = "Impossible d'ouvrir le formulaire : l'offre n'existe pas ou a été supprimée !";
+
+    // --- SUPPRESSION ---
+    public static final String BID_DELETE_SUCCESS = "L'offre (Bid) a été supprimée avec succès !";
+    public static final String BID_DELETE_NOT_FOUND = "Suppression impossible : l'offre n'existe pas ou a déjà été supprimée !";
+
 }
