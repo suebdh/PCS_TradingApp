@@ -1,6 +1,5 @@
 package com.poseidon.tradingapp.controllers;
 
-import com.poseidon.tradingapp.domain.CurvePoint;
 import com.poseidon.tradingapp.dto.CurvePointDto;
 import com.poseidon.tradingapp.exceptions.CurvePointNotFoundException;
 import com.poseidon.tradingapp.services.CurvePointService;
