@@ -17,15 +17,28 @@
 			<a href="/rule/list">Rule</a>
 		</div>
 		<div class="col-6 text-right">
+			<!-- Partie login désactivée temporairement -->
+			<!--/*
 			Logged in user: <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
 			<form th:action="@{/app-logout}" method="POST">
 				<input type="submit" value="Logout"/>
 			</form>
+			*/-->
+			<!-- Remplacement temporaire -->
+			Logged in user: <b>Anonymous</b>
 		</div>
 	</div>
 	<div class="row"><h2>Curve Point List</h2></div>
+	
+	<!-- Messages flash -->
+	<div th:if="${successMessage}" class="alert alert-success mt-3" role="alert"
+	     th:text="${successMessage}"></div>
+	
+	<div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert"
+	     th:text="${errorMessage}"></div>
+	
 	<div class="row">
-		<a href="/curvePoint/add" class="btn btn-primary btn-sm">Add New</a>
+		<a th:href="@{/curvePoint/add}" class="btn btn-primary btn-sm">Add New</a>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
@@ -38,13 +51,13 @@
 			</thead>
 			<tbody>
 				<tr th:each="curvePoint : ${curvePoints}">
-					<td style="width: 10%" th:text="${curvePoint.id}"></td>
-					<td th:text="${curvePoint.id}"></td>
+					<td style="width: 10%" th:text="${curvePoint.curvePointId}"></td>
+					<td th:text="${curvePoint.curvePointId}"></td>
 					<td th:text="${curvePoint.term}"></td>
 					<td th:text="${curvePoint.value}"></td>
 					<td style="width: 15%" class="text-center">
-						<a th:href="@{/curvePoint/update/{id}(id=${curvePoint.id})}">Edit</a>&nbsp;|&nbsp;
-						<a th:href="@{/curvePoint/delete/{id}(id=${curvePoint.id})}">Delete</a>
+						<a th:href="@{/curvePoint/update/{id}(id=${curvePoint.curvePointId})}">Edit</a>&nbsp;|&nbsp;
+						<a th:href="@{/curvePoint/delete/{id}(id=${curvePoint.curvePointId})}">Delete</a>
 					</td>
 				</tr>
 			</tbody>

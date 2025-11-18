@@ -52,4 +52,18 @@ public final class MessageUtils {
     public static final String BID_DELETE_SUCCESS = "L'offre (Bid) a été supprimée avec succès !";
     public static final String BID_DELETE_NOT_FOUND = "Suppression impossible : l'offre n'existe pas ou a déjà été supprimée !";
 
+    // ========================================================================
+// === CURVEPOINT (Points de courbe) ===
+
+    // --- AJOUT ---
+    public static final String CURVE_ADD_SUCCESS = "Le point de courbe a été ajouté avec succès !";
+
+    // --- MISE À JOUR / ÉDITION ---
+    public static final String CURVE_UPDATE_SUCCESS = "Le point de courbe a été mis à jour avec succès !";
+    public static final String CURVE_UPDATE_NOT_FOUND = "Mise à jour impossible : le point de courbe n'existe pas ou a été supprimé !";
+    public static final String CURVE_EDIT_NOT_FOUND = "Impossible d'ouvrir le formulaire : le point de courbe n'existe pas ou a été supprimé !";
+
+    // --- SUPPRESSION ---
+    public static final String CURVE_DELETE_SUCCESS = "Le point de courbe a été supprimé avec succès !";
+    public static final String CURVE_DELETE_NOT_FOUND = "Suppression impossible : le point de courbe n'existe pas ou a déjà été supprimé !";
 }

@@ -12,7 +12,14 @@
 	<div class="row">
 		<h2>Update Rule</h2>
 	</div>
-
+	
+	<!-- Messages flash -->
+	<div th:if="${successMessage}" class="alert alert-success mt-3" role="alert"
+	     th:text="${successMessage}"></div>
+	
+	<div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert"
+	     th:text="${errorMessage}"></div>
+	
 	<div class="row">
 		<form action="#" th:action="@{/rule/update/{id}(id=${rule.ruleId})}" th:object="${rule}" method="post" class="form-horizontal" style="width: 100%">
 			<div class="form-group">
@@ -62,7 +69,7 @@
 			<div class="form-group">
 				<div class="col-sm-12">
 					<input type="hidden" th:field="*{ruleId}">
-					<a class="btn btn-danger btn-sm" href="/rule/list">Cancel</a>
+					<a class="btn btn-danger btn-sm" th:href="@{/rule/list}">Cancel</a>
 					<input class="btn btn-primary btn-sm" type="submit" value="Update Rule">
 				</div>
 			</div>
