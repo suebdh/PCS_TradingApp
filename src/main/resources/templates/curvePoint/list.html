@@ -29,8 +29,16 @@
 		</div>
 	</div>
 	<div class="row"><h2>Curve Point List</h2></div>
+	
+	<!-- Messages flash -->
+	<div th:if="${successMessage}" class="alert alert-success mt-3" role="alert"
+	     th:text="${successMessage}"></div>
+	
+	<div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert"
+	     th:text="${errorMessage}"></div>
+	
 	<div class="row">
-		<a href="/curvePoint/add" class="btn btn-primary btn-sm">Add New</a>
+		<a th:href="@{/curvePoint/add}" class="btn btn-primary btn-sm">Add New</a>
 		<table class="table table-bordered">
 			<thead>
 				<tr>

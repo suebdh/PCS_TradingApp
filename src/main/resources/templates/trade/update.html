@@ -11,7 +11,14 @@
 	<div class="row">
 		<h2>Update Trade</h2>
 	</div>
-
+	
+	<!-- Messages flash -->
+	<div th:if="${successMessage}" class="alert alert-success mt-3" role="alert"
+	     th:text="${successMessage}"></div>
+	
+	<div th:if="${errorMessage}" class="alert alert-danger mt-3" role="alert"
+	     th:text="${errorMessage}"></div>
+	
 	<div class="row">
 		<form action="#" th:action="@{/trade/update/{id}(id=${trade.tradeId})}" th:object="${trade}" method="post" class="form-horizontal" style="width: 100%">
 			<div class="form-group">
@@ -40,7 +47,7 @@
 			<div class="form-group">
 				<div class="col-sm-12">
 					<input type="hidden" th:field="*{tradeId}">
-					<a class="btn btn-danger btn-sm" href="/trade/list">Cancel</a>
+					<a class="btn btn-danger btn-sm" th:href="@{/trade/list}">Cancel</a>
 					<input class="btn btn-primary btn-sm" type="submit" value="Update Trade">
 				</div>
 			</div>
