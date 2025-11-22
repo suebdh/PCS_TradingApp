@@ -15,10 +15,22 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring") // permet l'injection Spring @Autowired
 public interface RuleMapper {
 
+    /**
+     * Convertit une entité Rule en DTO.
+     */
     RuleDto toDto (Rule entity);
+
+    /**
+     * Convertit un DTO en entité CurvePoint.
+     * L'ID est ignoré pour laisser JPA gérer sa génération.
+     */
+    @Mapping(target = "ruleId", ignore = true)
     Rule toEntity (RuleDto dto);
 
-    // Méthode spéciale pour mettre à jour une entité existante à partir d'un DTO
+    /**
+     * Met à jour une entité existante à partir d'un DTO.
+     * L'ID est ignoré pour éviter tout écrasement.
+     */
     @Mapping(target = "ruleId", ignore = true) // on ignore l'ID pour ne pas l'écraser
     void updateEntityFromDto(RuleDto dto, @MappingTarget Rule entity); //@MappingTarget pour dire ce n'est pas un objet à créer, mais un objet existant à mettre à jour.
 }

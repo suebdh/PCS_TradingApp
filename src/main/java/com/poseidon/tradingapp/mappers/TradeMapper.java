@@ -25,10 +25,12 @@ public interface TradeMapper {
 
     /**
      * Convertit un DTO en entité Trade.
+     * L'ID est ignoré pour laisser JPA gérer sa génération.
      *
      * @param dto le TradeDto
      * @return l'entité Trade correspondante
      */
+    @Mapping(target = "tradeId", ignore = true)
     Trade toEntity(TradeDto dto);
 
     /**
