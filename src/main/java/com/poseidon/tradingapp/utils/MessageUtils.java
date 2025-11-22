@@ -66,4 +66,19 @@ public final class MessageUtils {
     // --- SUPPRESSION ---
     public static final String CURVE_DELETE_SUCCESS = "Le point de courbe a été supprimé avec succès !";
     public static final String CURVE_DELETE_NOT_FOUND = "Suppression impossible : le point de courbe n'existe pas ou a déjà été supprimé !";
+
+    // ========================================================================
+// === Rating (Notation) ===
+    // --- AJOUT ---
+    public static final String RATING_ADD_SUCCESS = "Le rating a été ajouté avec succès !";
+
+    // --- MISE À JOUR / ÉDITION ---
+    public static final String RATING_EDIT_NOT_FOUND = "Impossible d'ouvrir le formulaire : le rating n'existe pas ou a été supprimé !";
+
+    public static final String RATING_UPDATE_SUCCESS = "Le rating a été mis à jour avec succès !";
+    public static final String RATING_UPDATE_NOT_FOUND = "Mise à jour impossible : le rating n'existe pas ou a été supprimé !";
+
+    // --- SUPPRESSION ---
+    public static final String RATING_DELETE_SUCCESS = "Le rating a été supprimé avec succès !";
+    public static final String RATING_DELETE_NOT_FOUND = "Suppression impossible : le rating n'existe pas ou a déjà été supprimé !";
 }
