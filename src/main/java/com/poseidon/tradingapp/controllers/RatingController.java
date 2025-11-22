@@ -1,54 +1,137 @@
 package com.poseidon.tradingapp.controllers;
 
-import com.poseidon.tradingapp.domain.Rating;
+import com.poseidon.tradingapp.dto.RatingDto;
+import com.poseidon.tradingapp.exceptions.RatingNotFoundException;
+import com.poseidon.tradingapp.services.RatingService;
+import com.poseidon.tradingapp.utils.MessageUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
+@Slf4j
 @Controller
+@RequestMapping("/rating")
 public class RatingController {
-    // TODO: Inject Rating service
+    public final RatingService ratingService;
 
-    @RequestMapping("/rating/list")
+    public RatingController(RatingService ratingService) {
+        this.ratingService = ratingService;
+    }
+
+    /**
+     * Affiche la liste de tous les Ratings.
+     */
+    @GetMapping("/list")
     public String home(Model model)
     {
-        // TODO: find all Rating, add to model
+        log.info("GET /rating/list - Récupération de la liste des notations");
+        List<RatingDto> list= ratingService.findAll();
+        model.addAttribute("ratings", list);
+        log.info("{} notation(s) récupérée(s) et envoyée(s) à la vue", list.size());
         return "rating/list";
     }
 
-    @GetMapping("/rating/add")
-    public String addRatingForm(Rating rating) {
+    /**
+     * Affiche le formulaire d'ajout d'un nouveau Rating.
+     */
+    @GetMapping("/add")
+    public String addRatingForm(Model model) {
+        log.info("GET /rating/add - Affichage du formulaire d'ajout d'une nouvelle notation");
+        model.addAttribute("rating", new RatingDto());
         return "rating/add";
     }
 
-    @PostMapping("/rating/validate")
-    public String validate(@Valid Rating rating, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return Rating list
-        return "rating/add";
-    }
+    /**
+     * Valide et enregistre un nouveau Rating.
+     */
+    @PostMapping("/validate")
+    public String validate(@Valid @ModelAttribute("rating") RatingDto ratingDto,
+                           BindingResult result,
+                           RedirectAttributes redirectAttributes) {
+        log.info("POST /rating/validate - Validation et enregistrement d'une nouvelle notation");
 
-    @GetMapping("/rating/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Rating by Id and to model then show to the form
-        return "rating/update";
-    }
+        if (result.hasErrors()) {
+            log.warn("Validation échouée pour le Rating : {}", ratingDto);
+            return "rating/add";
+        }
 
-    @PostMapping("/rating/update/{id}")
-    public String updateRating(@PathVariable("id") Integer id, @Valid Rating rating,
-                             BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Rating and return Rating list
+        ratingService.create(ratingDto);
+        redirectAttributes.addFlashAttribute("successMessage", MessageUtils.RATING_ADD_SUCCESS);
+        log.info("Rating ajouté avec succès");
         return "redirect:/rating/list";
     }
 
-    @GetMapping("/rating/delete/{id}")
-    public String deleteRating(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Rating by Id and delete the Rating, return to Rating list
+    /**
+     * Affiche le formulaire de mise à jour pour un Rating existant.
+     */
+    @GetMapping("/update/{id}")
+    public String showUpdateForm(@PathVariable("id") Integer id,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes) {
+        log.info("GET /rating/update/{} - Récupération du Rating à mettre à jour", id);
+
+        try {
+            RatingDto ratingDto = ratingService.findById(id);
+            model.addAttribute("rating", ratingDto);
+            return "rating/update";
+        } catch (RatingNotFoundException e) {
+            log.error("Rating introuvable avec id={}", id);
+            redirectAttributes.addFlashAttribute("errorMessage", MessageUtils.RATING_EDIT_NOT_FOUND);
+            return "redirect:/rating/list";
+        }
+    }
+
+    /**
+     * Met à jour un Rating existant après validation du formulaire.
+     */
+    @PostMapping("/update/{id}")
+    public String updateRating(@PathVariable("id") Integer id,
+                               @Valid @ModelAttribute("rating") RatingDto ratingDto,
+                               BindingResult result,
+                               RedirectAttributes redirectAttributes) {
+        log.info("POST /rating/update/{} - Tentative de mise à jour du Rating", id);
+
+        if (result.hasErrors()) {
+            log.warn("Validation échouée lors de la mise à jour du Rating id={}", id);
+            return "rating/update";
+        }
+
+        try {
+            ratingService.update(id, ratingDto);
+            redirectAttributes.addFlashAttribute("successMessage", MessageUtils.RATING_UPDATE_SUCCESS);
+            log.info("Rating id={} mis à jour avec succès", id);
+        } catch (RatingNotFoundException e) {
+            log.error("Erreur lors de la mise à jour : Rating id={} introuvable", id);
+            redirectAttributes.addFlashAttribute("errorMessage", MessageUtils.RATING_UPDATE_NOT_FOUND);
+        }
+
+        return "redirect:/rating/list";
+    }
+
+    /**
+     * Supprime un Rating existant.
+     */
+    @GetMapping("/delete/{id}")
+    public String deleteRating(@PathVariable("id") Integer id,
+                               RedirectAttributes redirectAttributes) {
+        log.info("GET /rating/delete/{} - Suppression d'un Rating", id);
+
+        try {
+            ratingService.delete(id);
+            redirectAttributes.addFlashAttribute("successMessage", MessageUtils.RATING_DELETE_SUCCESS);
+            log.info("Rating id={} supprimé avec succès", id);
+        } catch (RatingNotFoundException e) {
+            log.error("Erreur lors de la suppression : Rating id={} introuvable", id);
+            redirectAttributes.addFlashAttribute("errorMessage", MessageUtils.RATING_DELETE_NOT_FOUND);
+        }
+
         return "redirect:/rating/list";
     }
 }
