@@ -1,4 +1,5 @@
 package com.poseidon.tradingapp.utils;
+
 /**
  * Classe utilitaire centralisant les messages utilisateurs (flash / validation)
  * Cette approche favorise la cohérence entre les contrôleurs et simplifie la maintenance (modification d'un message à un seul endroit)
@@ -53,7 +54,7 @@ public final class MessageUtils {
     public static final String BID_DELETE_NOT_FOUND = "Suppression impossible : l'offre n'existe pas ou a déjà été supprimée !";
 
     // ========================================================================
-// === CURVEPOINT (Points de courbe) ===
+    // === CURVEPOINT (Points de courbe) ===
 
     // --- AJOUT ---
     public static final String CURVE_ADD_SUCCESS = "Le point de courbe a été ajouté avec succès !";
@@ -68,7 +69,7 @@ public final class MessageUtils {
     public static final String CURVE_DELETE_NOT_FOUND = "Suppression impossible : le point de courbe n'existe pas ou a déjà été supprimé !";
 
     // ========================================================================
-// === Rating (Notation) ===
+    // === Rating (Notation) ===
     // --- AJOUT ---
     public static final String RATING_ADD_SUCCESS = "Le rating a été ajouté avec succès !";
 
@@ -81,4 +82,20 @@ public final class MessageUtils {
     // --- SUPPRESSION ---
     public static final String RATING_DELETE_SUCCESS = "Le rating a été supprimé avec succès !";
     public static final String RATING_DELETE_NOT_FOUND = "Suppression impossible : le rating n'existe pas ou a déjà été supprimé !";
+
+    // ========================================================================
+    // === USER (Utilisateurs) ===
+
+    // --- AJOUT ---
+    public static final String USER_ADD_SUCCESS = "L'utilisateur a été ajouté avec succès !";
+
+    // --- MISE À JOUR / ÉDITION ---
+    public static final String USER_UPDATE_SUCCESS = "L'utilisateur a été mis à jour avec succès !";
+    public static final String USER_UPDATE_NOT_FOUND = "Mise à jour impossible : l'utilisateur n'existe pas ou a été supprimé !";
+    public static final String USER_EDIT_NOT_FOUND = "Impossible d'ouvrir le formulaire : l'utilisateur n'existe pas ou a été supprimé !";
+
+    // --- SUPPRESSION ---
+    public static final String USER_DELETE_SUCCESS = "L'utilisateur a été supprimé avec succès !";
+    public static final String USER_DELETE_NOT_FOUND = "Suppression impossible : l'utilisateur n'existe pas ou a déjà été supprimé !";
+
 }
