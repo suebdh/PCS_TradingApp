@@ -17,7 +17,7 @@ public class SpringSecurityConfiguration {
         http
                 .authorizeHttpRequests(auth -> auth
                         // on autorise explicitement TOUTES les routes de RuleController
-                        .requestMatchers("/rule/**", "/trade/**", "/bidList/**", "/curvePoint/**", "/rating/**").permitAll()
+                        .requestMatchers("/rule/**", "/trade/**", "/bidList/**", "/curvePoint/**", "/rating/**", "/user/**" ).permitAll()
                         // on autorise les ressources statiques
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         // on autorise la racine également

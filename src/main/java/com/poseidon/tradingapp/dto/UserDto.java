@@ -15,7 +15,7 @@ public class UserDto {
     @Size(min = 4, max = 20, message = "Le username doit contenir entre 4 et 20 caractères")
     private String username;
     @NotBlank(message = "Le password est obligatoire")
-    @Size(min = 5, message = "Le password doit contenir au moins 5 caractères")
+    @Size(min = 4, message = "Le password doit contenir au moins 4 caractères")
     private String password;
     @NotBlank(message = "Le fullname est obligatoire")
     @Size(min = 3, max = 30, message = "Le fullname doit contenir entre 3 et 30 caractères")
