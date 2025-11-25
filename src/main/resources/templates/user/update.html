@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8"/>
-	<title>Home</title>
-	<link rel="stylesheet" href="../../css/bootstrap.min.css" >
+	<title>User - Update</title>
+	<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
 <div class="container">
-
+	
 	<div class="row">
 		<h2>Update User</h2>
 	</div>
-
+	
+	<!-- Messages flash -->
+	<div th:if="${successMessage}" class="alert alert-success mt-2">
+		<span th:text="${successMessage}"></span>
+	</div>
+	
+	<div th:if="${errorMessage}" class="alert alert-danger mt-2">
+		<span th:text="${errorMessage}"></span>
+	</div>
+	
 	<div class="row">
-		<form action="#" th:action="@{/user/update/{id}(id=${user.id})}" th:object="${user}" method="post" class="form-horizontal" style="width: 100%">
+		<form action="#" th:action="@{/user/update/{id}(id=${user.userId})}" th:object="${user}" method="post"
+		      class="form-horizontal" style="width: 100%">
 			<div class="form-group">
 				<label for="fullname" class="col-sm-2 control-label">Full Name</label>
 				<div class="col-sm-10">
@@ -37,22 +47,24 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="password" class="col-sm-2 control-label">Role</label>
+				<label class="col-sm-2 control-label">Role</label>
 				<div class="col-sm-10">
-					<label class="checkbox-inline"><input type="radio" th:field="*{role}" th:value="ADMIN">Admin</label>
-					<label class="checkbox-inline"><input type="radio" th:field="*{role}" th:value="USER">User</label>
+					<label class="radio-inline" for="role_admin"><input type="radio" th:field="*{role}" th:value="ADMIN"
+					                                                    id="role_admin">Admin</label>
+					<label class="radio-inline" for="role_user"><input type="radio" th:field="*{role}" th:value="USER"
+					                                                   id="role_user">User</label>
 				</div>
 			</div>
-
-
+			
+			
 			<div class="form-group">
 				<div class="col-sm-12">
-					<input type="hidden" th:field="*{id}">
-					<a class="btn btn-danger btn-sm" href="/user/list">Cancel</a>
+					<input type="hidden" th:field="*{userId}">
+					<a class="btn btn-danger btn-sm" th:href="@{/user/list}">Cancel</a>
 					<input class="btn btn-primary btn-sm" type="submit" value="Update User">
 				</div>
 			</div>
-
+		
 		</form>
 	</div>
 

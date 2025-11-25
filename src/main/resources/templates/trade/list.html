@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	  xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="utf-8"/>
-<title>Home</title>
-<link rel="stylesheet" href="../../css/bootstrap.min.css" >
+	<meta charset="utf-8"/>
+	<title>Trade List</title>
+	<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
 <div class="container">
@@ -41,25 +41,25 @@
 		<a th:href="@{/trade/add}" class="btn btn-primary btn-sm">Add New</a>
 		<table class="table table-bordered">
 			<thead>
-				<tr>
-					<th>Id</th>
-					<th>Account</th>
-					<th>Type</th>
-					<th>Buy Quantity</th>
-					<th>Action</th>
-				</tr>
+			<tr>
+				<th>Id</th>
+				<th>Account</th>
+				<th>Type</th>
+				<th>Buy Quantity</th>
+				<th>Action</th>
+			</tr>
 			</thead>
 			<tbody>
-				<tr th:each="trade : ${trades}">
-					<td style="width: 10%" th:text="${trade.tradeId}"></td>
-					<td th:text="${trade.account}"></td>
-					<td th:text="${trade.type}"></td>
-					<td th:text="${trade.buyQuantity}"></td>
-					<td style="width: 15%" class="text-center">
-						<a th:href="@{/trade/update/{id}(id=${trade.tradeId})}">Edit</a>&nbsp;|&nbsp;
-						<a th:href="@{/trade/delete/{id}(id=${trade.tradeId})}">Delete</a>
-					</td>
-				</tr>
+			<tr th:each="trade : ${trades}">
+				<td style="width: 10%" th:text="${trade.tradeId}"></td>
+				<td th:text="${trade.account}"></td>
+				<td th:text="${trade.type}"></td>
+				<td th:text="${trade.buyQuantity}"></td>
+				<td style="width: 15%" class="text-center">
+					<a th:href="@{/trade/update/{id}(id=${trade.tradeId})}">Edit</a>&nbsp;|&nbsp;
+					<a th:href="@{/trade/delete/{id}(id=${trade.tradeId})}">Delete</a>
+				</td>
+			</tr>
 			</tbody>
 		</table>
 	</div>
