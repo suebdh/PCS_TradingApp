@@ -72,8 +72,14 @@ public class UserService {
         // Update via MapStruct
         userMapper.updateEntityFromDto(dto, existing);
 
-        // Re-hash du mot de passe
-        existing.setPassword(passwordEncoder.encode(dto.getPassword()));
+        // Gestion du mot de passe
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            // Si un nouveau mot de passe a été saisi → re-hash
+            existing.setPassword(passwordEncoder.encode(dto.getPassword()));
+        } else {
+            // Sinon → conserver l'ancien mot de passe
+            log.debug("Mot de passe non modifié pour l'utilisateur id={}", id);
+        }
 
         User updated = userRepository.save(existing);
         log.info("Utilisateur mis à jour : id={}", updated.getUserId());
