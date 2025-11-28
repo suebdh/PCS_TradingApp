@@ -5,8 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -16,12 +20,15 @@ public class SpringSecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // on autorise explicitement TOUTES les routes de RuleController
-                        .requestMatchers("/rule/**", "/trade/**", "/bidList/**", "/curvePoint/**", "/rating/**", "/user/**" ).permitAll()
-                        // on autorise les ressources statiques
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        // on autorise la racine également
-                        .requestMatchers("/").permitAll()
+                        // les ressources statiques restent publiques + la racine du projet
+                        .requestMatchers("/", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/app/login").permitAll()
+
+                        // accès ADMIN uniquement pour la gestion des utilisateurs
+                        .requestMatchers("/user/**").hasRole("ADMIN")
+
+                        // accès à tous les utilisateurs authentifiés (USER ou ADMIN)
+                        .requestMatchers("/bidList/**", "/curvePoint/**", "/trade/**", "/rating/**", "/rule/**").authenticated()
                         // tout le reste nécessitera une authentification
                         .anyRequest().authenticated()
                 )
@@ -31,8 +38,17 @@ public class SpringSecurityConfiguration {
                 // En phase de développement, on la désactive pour simplifier les tests des formulaires, car on n'a pas encore mis en place l'authentification complète ni l'injection du jeton CSRF dans les pages Thymeleaf.
                 // ATTENTION : À réactiver dès que les formulaires utilisateurs (login, création, etc.) seront finalisés.
                 .csrf(AbstractHttpConfigurer::disable)
-                // on active le formulaire de login par défaut
-                .formLogin(Customizer.withDefaults());
+                .formLogin(form -> form
+                        .loginPage("/app/login")             // page de login personnalisée
+                        .defaultSuccessUrl("/bidList/list", true)  // redirection après succès
+                        .failureUrl("/app/login?error=true") // gestion des erreurs
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/app-logout")            // action logout
+                        .logoutSuccessUrl("/")               // après déconnexion → home
+                        .permitAll()
+                );
 
         return http.build();
     }
