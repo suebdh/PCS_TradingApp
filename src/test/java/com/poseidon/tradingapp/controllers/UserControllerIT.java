@@ -253,4 +253,27 @@ public class UserControllerIT {
                 .andExpect(redirectedUrl("/user/list"))
                 .andExpect(flash().attributeExists("errorMessage"));
     }
+
+    // ============================================================
+    // SECURITY - USER cannot access /user/list
+    // ============================================================
+    @Test
+    @WithMockUser(username = "bob_user", roles = "USER")
+    void shouldDenyAccessToUserListForNonAdmin() throws Exception {
+
+        mockMvc.perform(get("/user/list"))
+                .andExpect(status().isForbidden()); // 403 = accès refusé
+    }
+
+    // ============================================================
+    // SECURITY - ADMIN can access /user/list
+    // ============================================================
+    @Test
+    @WithMockUser(username = "bob_admin", roles = "ADMIN")
+    void shouldAllowAccessToUserListForAdmin() throws Exception {
+
+        mockMvc.perform(get("/user/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/list"));
+    }
 }
