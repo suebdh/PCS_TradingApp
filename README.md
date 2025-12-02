@@ -38,6 +38,42 @@
 4. Create database with name "demo" as configuration in application.properties
 5. Run sql script to create table doc/data.sql
 
+## Initialisation de la base MySQL (profil DEV)
+
+Lors du tout **premier démarrage** de l'application en environnement **DEV**, Spring doit exécuter automatiquement les scripts SQL situés dans :
+
+- `src/main/resources/database/schema.sql`
+- `src/main/resources/database/data.sql`
+
+Pour que cette initialisation soit bien effectuée, la configuration suivante doit être activée dans `application-dev.properties` :
+
+spring.sql.init.mode=always
+
+Cela permet :
+
+- de créer automatiquement la table `users`
+- d'insérer les comptes initiaux `admin/admin` et `user/user`
+- d'appliquer la contrainte d'unicité sur `username`
+
+### Après le premier démarrage
+
+Une fois la base initialisée, il est recommandé de repasser la propriété à :
+
+spring.sql.init.mode=never
+
+Ainsi, on évite que :
+
+- les données soient réinsérées à chaque lancement.
+- des erreurs telles que `Duplicate entry 'admin' for key 'username_UNIQUE'` apparaissent
+
+Résumé
+
+| Étape               | Valeur recommandée                      |
+|---------------------|-----------------------------------------|
+| Premier lancement   | spring.sql.init.mode=always             |
+| Lancements suivants | spring.sql.init.mode=never              |
+
+
 ## Structure du projet et bonnes pratiques
 
 1. **Domain** → Contient les entités JPA (ex : `Rule`)

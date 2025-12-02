@@ -1,9 +1,12 @@
 package com.poseidon.tradingapp.config;
 
+import com.poseidon.tradingapp.repositories.UserRepository;
+import com.poseidon.tradingapp.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -34,18 +37,28 @@ public class SpringSecurityConfiguration {
                 // ATTENTION : À réactiver dès que les formulaires utilisateurs (login, création, etc.) seront finalisés.
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(form -> form
-                        .loginPage("/app/login")             // page de login personnalisée
+                        .loginPage("/app/login")             // URL GET pour afficher le formulaire de login
+                        .loginProcessingUrl("/app/login")    // URL POST TRAITÉE par Spring Security
                         .defaultSuccessUrl("/bidList/list", true)  // redirection après succès
                         .failureUrl("/app/login?error=true") // gestion des erreurs
                         .permitAll()
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedPage("/app/error")
                 )
                 .logout(logout -> logout
                         .logoutUrl("/app-logout")            // action logout
                         .logoutSuccessUrl("/")               // après déconnexion → home
                         .permitAll()
-                );
+        );
 
         return http.build();
+    }
+
+    // Active l'authentification Spring Security via les utilisateurs stockés en base MySQL (username, mot de passe BCrypt, rôle)
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository){
+        return new CustomUserDetailsService(userRepository);
     }
 
     @Bean

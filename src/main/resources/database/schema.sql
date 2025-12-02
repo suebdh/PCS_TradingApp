@@ -1,4 +1,16 @@
--- Création des tables
+-- ============================================================================
+-- SCHEMA SQL - ENVIRONNEMENT DEV
+-- ----------------------------------------------------------------------------
+-- Exécuté uniquement lors du premier démarrage (spring.sql.init.mode=always).
+-- En DEV, la base ne doit PAS être écrasée à chaque lancement.
+--
+-- Par conséquent :
+--   - "CREATE TABLE IF NOT EXISTS" est utilisé → évite les erreurs si la table existe
+--   - La contrainte UNIQUE est définie directement dans le CREATE (plus simple)
+--
+-- Objectif : initialiser la base une seule fois sans perturber les données existantes lors des redémarrages en développement.
+-- ============================================================================
+
 CREATE TABLE IF NOT EXISTS bid_list (
   bid_list_id INT NOT NULL AUTO_INCREMENT,
   account VARCHAR(30) NOT NULL,
@@ -90,10 +102,12 @@ CREATE TABLE IF NOT EXISTS rule (
 
 CREATE TABLE IF NOT EXISTS users (
   user_id INT NOT NULL AUTO_INCREMENT,
-  username VARCHAR(125),
-  password VARCHAR(125),
-  fullname VARCHAR(125),
-  role VARCHAR(125),
+  username VARCHAR(125) NOT NULL,
+  password VARCHAR(125) NOT NULL,
+  fullname VARCHAR(125) NOT NULL,
+  role VARCHAR(125) NOT NULL,
 
-  PRIMARY KEY (user_id)
+  PRIMARY KEY (user_id),
+  UNIQUE INDEX `username_UNIQUE` (username)
 );
+

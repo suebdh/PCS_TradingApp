@@ -5,9 +5,7 @@ import com.poseidon.tradingapp.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
-@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -18,9 +16,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        System.out.println("Spring Security cherche l'utilisateur : " + username);
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("Utilisateur non trouvé : " + username));
+
+
+        System.out.println("Utilisateur trouvé : " + user.getUsername() + ", rôle = " + user.getRole());
 
         // Conversion de notre User JPA vers un UserDetails Spring Security
         return org.springframework.security.core.userdetails.User

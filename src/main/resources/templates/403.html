@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-      <title>Spring Boot</title>
+	<title>Accès refusé - PCS Trading</title>
 </head>
 <body>
-   <h3>Access Denied Exception</h3>
-   <div>
-	    Logged in user: <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
-	    <form th:action="@{/app-logout}" method="POST">
-	         <input type="submit" value="Logout"/>
-	    </form>
-   </div> 	 
-    <p class="error" th:text="${errorMsg}">Error</p>
+<h3>Access Denied Exception</h3>
+<div>
+	Logged in user:
+	<b class="user" sec:authentication="name">username</b>
+	<form th:action="@{/app-logout}" method="POST">
+		<input type="submit" value="Logout"/>
+	</form>
+</div>
+<p class="error" th:text="${errorMsg}">Error</p>
 </body>
 </html>   

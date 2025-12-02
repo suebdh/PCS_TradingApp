@@ -2,6 +2,7 @@
 -- Jeu de données à remplir ultérieurement
 -- (utilisé uniquement pour les tests automatisés)
 -- ===============================================
+truncate table users ;
 
 insert into users(fullname, username, password, role)
 values("Administrator", "admin", "$2a$12$IFMtLs5EJBx7OHDS.NT9V.N1UUne4scxE5QDkDQ9sfb2rXQlP3a1i", "ADMIN");
