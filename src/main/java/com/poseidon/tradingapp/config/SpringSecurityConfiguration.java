@@ -11,9 +11,46 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuration centrale de Spring Security pour l'ensemble de l'application PCS_TradingApp
+ * <p>Cette classe :
+ *     <ul>
+ *       <li>Définit les règles d'accès aux différentes URL</li>
+ *      <li>Configure la page de Login personnalisée</li>
+ *      <li>Active l'authentification basée sur les utilisateurs stockés en base MySQL</li>
+ *      <li>Enregistre le filtre de sécurité principal (SecurityFilterChain)</li>
+ *      <li>Déclare le PasswordEncoder (BCrypt)</li>
+ *     </ul>
+ * </p>
+ * <p>
+ *     Règles d'accès :
+ *     <ul>
+ *         <li>Accès public : Ressources statiques, "/", page de login</li>
+ *         <li>Accès réservé ADMIN : /user/**</li>
+ *         <li>Accès authentifié (USER ou ADMIN) : bidlist, trade, rating, curvepoint et rule</li>
+ *     </ul>
+ * </p>
+ * <p>
+ *     Remarque : La protection CSRF est désactivée temporairement pour les tests et la simplification du dév.
+ *     Elle pourra être réactivée si nécessaire.
+ * </p>
+ */
 @Configuration
 public class SpringSecurityConfiguration {
-
+    /**
+     * Cette méthode configure :
+     * <ul>
+     * <li>Les règles d'autorisation (public, authentifié, ADMIN uniquement)</li>
+     * <li>La page de login personnalisée</li>
+     * <li>La gestion de l'erreur 403</li>
+     * <li>Le mécanisme de Logout</li>
+     * <li>La désactivation temporaire du CSRF</li>
+     * </ul>
+     *
+     * @param http objet HttpSecurity fourni par Spring Security
+     * @return SecurityFilterChain retourné
+     * @throws Exception
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -50,17 +87,28 @@ public class SpringSecurityConfiguration {
                         .logoutUrl("/app-logout")            // action logout
                         .logoutSuccessUrl("/")               // après déconnexion → home
                         .permitAll()
-        );
+                );
 
         return http.build();
     }
 
+    /**
+     * Fournit une implémentation personnalisée de {@link UserDetailsService} permettant à Spring Security de
+     * charger les utilisateurs depuis la base MySQL (username, mot de passe BCrypt, rôle)
+     * @param userRepository repository d'accès à la table users
+     * @return une instance de {@link CustomUserDetailsService}
+     */
     // Active l'authentification Spring Security via les utilisateurs stockés en base MySQL (username, mot de passe BCrypt, rôle)
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository){
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
         return new CustomUserDetailsService(userRepository);
     }
 
+    /**
+     * Déclare le PasswordEncoder utilisé pour hasher les mots de passe
+     * BCrypt est l'algorithme recommandé par Spring Security
+     * @return PasswordEncoder basé sur BCrypt
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
