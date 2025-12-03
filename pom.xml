@@ -82,6 +82,32 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+        <!--
+        Active l'intégration entre Thymeleaf et Spring Security.
+
+        Grâce à cette dépendance :
+            * Thymeleaf peut accéder automatiquement au SecurityContext de Spring Security
+            (équivalent Java : SecurityContextHolder.getContext().getAuthentication())
+            * on peut afficher le nom de l'utilisateur connecté :
+                 • sec : authentication="name"
+                 • ${#authentication.name}
+            * on peut afficher / masquer des sections selon les rôles :
+                 • sec : authorize="hasRole('ADMIN')"
+            * ${#authentication.*} devient disponible dans toutes les vues.
+
+        Sans cette dépendance :
+            * les balises "sec :" NE fonctionnent PAS
+            * ${#authentication} peut être null dans les templates
+             → erreurs du type : EL1007E (propriété 'name' introuvable, car authentication = null).
+
+        Cette dépendance est indispensable dès que l'interface utilise le contexte de sécurité (utilisateur connecté, rôles, conditions d'accès).
+        -->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
+
         <!-- Tests de sécurité Spring (MockMvc + @WithMockUser, etc.) -->
         <dependency>
             <groupId>org.springframework.security</groupId>

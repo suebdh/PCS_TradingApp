@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,15 +24,19 @@ public class UserRepositoryIT {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private User user;
-
     @BeforeEach
-    void setup() {
-        user = new User();
-        user.setUsername("sue");
-        user.setFullname("Sue BDH");
-        user.setRole("USER");
-        user.setPassword(passwordEncoder.encode("123"));
+    void cleanDatabase() {
+        userRepository.deleteAll();
+    }
+
+    // Helper pour créer un user propre
+    private User buildUser(String username, String fullname, String role, String rawPassword) {
+        User u = new User();
+        u.setUsername(username);
+        u.setFullname(fullname);
+        u.setRole(role);
+        u.setPassword(passwordEncoder.encode(rawPassword));
+        return u;
     }
 
     // ============================================================
@@ -38,10 +44,12 @@ public class UserRepositoryIT {
     // ============================================================
     @Test
     void shouldCreateUser() {
+        User user = buildUser("sue_create", "Sue BDH", "USER", "123");
+
         User saved = userRepository.save(user);
 
         assertNotNull(saved.getUserId());
-        assertEquals("sue", saved.getUsername());
+        assertEquals("sue_create", saved.getUsername());
         assertTrue(passwordEncoder.matches("123", saved.getPassword()));
     }
 
@@ -50,13 +58,13 @@ public class UserRepositoryIT {
     // ============================================================
     @Test
     void shouldFindUserById() {
-        User saved = userRepository.save(user);
+        User saved = userRepository.save(buildUser("sue_read", "Sue BDH", "USER", "123"));
 
         Optional<User> result = userRepository.findById(saved.getUserId());
         assertTrue(result.isPresent());
 
         User found = result.get();
-        assertEquals("sue", found.getUsername());
+        assertEquals("sue_read", found.getUsername());
         assertEquals("Sue BDH", found.getFullname());
         assertTrue(passwordEncoder.matches("123", found.getPassword()));
     }
@@ -66,7 +74,7 @@ public class UserRepositoryIT {
     // ============================================================
     @Test
     void shouldUpdateUser() {
-        User saved = userRepository.save(user);
+        User saved = userRepository.save(buildUser("sue_update", "Sue BDH", "USER", "123"));
 
         saved.setFullname("Sousou Updated");
         saved.setPassword(passwordEncoder.encode("456"));
@@ -84,7 +92,7 @@ public class UserRepositoryIT {
     // ============================================================
     @Test
     void shouldDeleteUser() {
-        User saved = userRepository.save(user);
+        User saved = userRepository.save(buildUser("sue_delete", "Sue BDH", "USER", "123"));
 
         userRepository.deleteById(saved.getUserId());
 

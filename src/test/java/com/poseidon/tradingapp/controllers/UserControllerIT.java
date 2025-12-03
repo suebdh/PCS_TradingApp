@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -18,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @WithMockUser(username = "admin", roles = "ADMIN")
 public class UserControllerIT {
 
@@ -42,7 +44,7 @@ public class UserControllerIT {
         user.setUsername("Cindy");
         user.setFullname("Cindy Crawford");
         user.setRole("USER");
-        user.setPassword("558899");
+        user.setPassword("558899"); // utilisé uniquement en base de test, pas pour la validation DTO
 
         User saved = userRepository.save(user);
 
@@ -73,12 +75,15 @@ public class UserControllerIT {
     // ============================================================
     @Test
     void shouldAddUserWhenSuccess() throws Exception {
+        // mot de passe conforme à la regex : au moins 8 car., une maj, une min, un chiffre, un spécial
+        String strongPassword = "TestUser1!";
+
         //when + then
         mockMvc.perform(post("/user/validate")
                         .param("fullname", "Jade BH")
                         .param("username", "Jade")
                         .param("role", "USER")
-                        .param("password", "654789")
+                        .param("password", strongPassword)
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/list"))
@@ -91,12 +96,15 @@ public class UserControllerIT {
     // ============================================================
     @Test
     void shouldNotAddUserWhenError() throws Exception {
+        // username vide → validation doit échouer
+        String strongPassword = "TestUser1!";
+
         //when + then
         mockMvc.perform(post("/user/validate")
                         .param("fullname", " Hammar")
                         .param("username", "")// invalide
                         .param("role", "USER")
-                        .param("password", "684719")
+                        .param("password", strongPassword) // valide, pour isoler l'erreur sur username
                 )
                 .andExpect(status().isOk()) // retour normal
                 .andExpect(view().name("user/add")) // retour au formulaire
@@ -114,7 +122,7 @@ public class UserControllerIT {
         user.setUsername("cindy");
         user.setFullname("Cindy Crawford");
         user.setRole("USER");
-        user.setPassword("1234");
+        user.setPassword("1234"); // ici, on passe par l'entité directement, pas par le DTO
 
         User saved = userRepository.save(user);
 
@@ -149,11 +157,13 @@ public class UserControllerIT {
         user.setPassword("1234");
         User saved = userRepository.save(user);
 
+        String strongPassword = "TestUser1!";
+
         mockMvc.perform(post("/user/update/" + saved.getUserId())
                         .param("username", "Cino")
                         .param("fullname", "Cindy Updated")
                         .param("role", "ADMIN")
-                        .param("password", "9999"))
+                        .param("password", strongPassword))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/list"))
                 .andExpect(flash().attributeExists("successMessage"));
@@ -178,11 +188,14 @@ public class UserControllerIT {
         user.setPassword("1234");
         User saved = userRepository.save(user);
 
+        String strongPassword = "TestUser1!";
+
         mockMvc.perform(post("/user/update/" + saved.getUserId())
                         .param("username", "") // invalide
                         .param("fullname", "Cindy")
                         .param("role", "USER")
-                        .param("password", "1234"))
+                        .param("password", strongPassword) // valide → l'erreur porte sur username
+                )
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/update"))
                 .andExpect(model().attributeExists("user"));
@@ -195,11 +208,14 @@ public class UserControllerIT {
     @Test
     void shouldRedirectUpdateWhenUserNotFound() throws Exception {
 
+        String strongPassword = "TestUser1!";
+
         mockMvc.perform(post("/user/update/999")
                         .param("username", "test")
                         .param("fullname", "Test Test")
                         .param("role", "USER")
-                        .param("password", "1234"))
+                        .param("password", strongPassword)
+                )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/list"))
                 .andExpect(flash().attributeExists("errorMessage"));
@@ -236,5 +252,28 @@ public class UserControllerIT {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/list"))
                 .andExpect(flash().attributeExists("errorMessage"));
+    }
+
+    // ============================================================
+    // SECURITY - USER cannot access /user/list
+    // ============================================================
+    @Test
+    @WithMockUser(username = "bob_user", roles = "USER")
+    void shouldDenyAccessToUserListForNonAdmin() throws Exception {
+
+        mockMvc.perform(get("/user/list"))
+                .andExpect(status().isForbidden()); // 403 = accès refusé
+    }
+
+    // ============================================================
+    // SECURITY - ADMIN can access /user/list
+    // ============================================================
+    @Test
+    @WithMockUser(username = "bob_admin", roles = "ADMIN")
+    void shouldAllowAccessToUserListForAdmin() throws Exception {
+
+        mockMvc.perform(get("/user/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/list"));
     }
 }

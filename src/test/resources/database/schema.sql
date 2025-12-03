@@ -1,3 +1,17 @@
+-- ============================================================================
+-- SCHEMA SQL - ENVIRONNEMENT TEST
+-- ----------------------------------------------------------------------------
+-- Important :
+-- Ce schéma est exécuté plusieurs fois lors des tests d'intégration.
+-- Contrairement à l'environnement DEV, le contexte Spring Boot est rechargé entre certains tests (@DirtiesContext), ce qui implique :
+--
+--   - DROP TABLE obligatoire → garantit une base propre avant chaque création
+--   - CREATE TABLE sans "IF NOT EXISTS" → évite que le script soit ignoré
+--   - Contrainte UNIQUE ajoutée via ALTER TABLE pour assurer sa présence même lorsque Spring recharge le contexte
+--
+-- Objectif : assurer des tests 100% reproductibles et isolés.
+-- ============================================================================
+
 -- Suppression des tables existantes pour garantir un schéma propre
 -- IMPORTANT : si des relations de clé étrangère sont ajoutées plus tard, toujours supprimer d'abord les tables "enfants" (celles qui
 -- contiennent les FOREIGN KEY) avant les tables "parents" (référencées), afin d'éviter les erreurs de contrainte.
@@ -100,10 +114,13 @@ CREATE TABLE rule (
 
 CREATE TABLE users (
   user_id INT NOT NULL AUTO_INCREMENT,
-  username VARCHAR(125),
-  password VARCHAR(125),
-  fullname VARCHAR(125),
-  role VARCHAR(125),
+  username VARCHAR(125) NOT NULL,
+  password VARCHAR(125) NOT NULL,
+  fullname VARCHAR(125) NOT NULL,
+  role VARCHAR(125) NOT NULL,
 
   PRIMARY KEY (user_id)
 );
+
+ALTER TABLE users
+    ADD CONSTRAINT username_unique UNIQUE (username);

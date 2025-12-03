@@ -49,6 +49,13 @@ public class UserService {
     // ============================================================
     // CREATE
     // ============================================================
+
+    /**
+     * Crée un nouvel utilisateur
+     * <p>Le mot de passe fourni dans le DTO est automatiquement hashé via BCrypt avant d'être sauvegardé en base</p>
+     * @param dto données utilisateur
+     * @return UserDto correspondant à l'utilisateur sauvegardé
+     */
     public UserDto create(UserDto dto) {
         User entity = userMapper.toEntity(dto);
 
@@ -64,6 +71,15 @@ public class UserService {
     // ============================================================
     // UPDATE
     // ============================================================
+
+    /**
+     * Met à jour un utilisateur existant
+     * <p>Si un nouveau mot de passe est fourni, celui-ci est hashé et remplace l'ancien</p>
+     * <p>Si le mot de passe est null ou vide, l'ancien hash est conservé</p>
+     * @param id identifiant de l'utilisateur
+     * @param dto données modifiées
+     * @return UserDto mis à jour
+     */
     public UserDto update(Integer id, UserDto dto) {
         User existing = userRepository.findById(id)
                 .orElseThrow(() ->
@@ -72,8 +88,14 @@ public class UserService {
         // Update via MapStruct
         userMapper.updateEntityFromDto(dto, existing);
 
-        // Re-hash du mot de passe
-        existing.setPassword(passwordEncoder.encode(dto.getPassword()));
+        // Gestion du mot de passe
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            // Si un nouveau mot de passe a été saisi → re-hash
+            existing.setPassword(passwordEncoder.encode(dto.getPassword()));
+        } else {
+            // Sinon → conserver l'ancien mot de passe
+            log.debug("Mot de passe non modifié pour l'utilisateur id={}", id);
+        }
 
         User updated = userRepository.save(existing);
         log.info("Utilisateur mis à jour : id={}", updated.getUserId());
